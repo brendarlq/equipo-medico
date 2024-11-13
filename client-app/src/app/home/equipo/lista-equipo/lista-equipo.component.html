@@ -130,7 +130,7 @@
            {{equipo.ubicacion? ' sala:' + equipo.ubicacion.numeroSala  : ""}}
             {{equipo.ubicacion? ' nivel:' + equipo.ubicacion.nivel: ""}}</td>
           <td class="table-column text-center">{{equipo.estado}}</td>
-          <td class="table-column text-center">{{equipo.contrato? equipo.contrato.estadoContrato: 'Sin contrato'}}</td>
+          <td class="table-column text-center">{{equipo.contratos? equipo.contratos.estadoContrato: 'Sin contrato'}}</td>
         </tr>
       </ng-template>
     </p-table>

@@ -1,14 +1,14 @@
 <h2 class="form-mantenimiento-title">Atender Orden de Trabajo</h2>
 
 <form clrForm>
-  <div class="clr-col-4">
+  <div class="clr-col-8">
     <clr-select-container>
       <label>Estado de la orden:</label>
       <select clrSelect name="estadoOT" #selectEstadoOT
               [(ngModel)]="estadoOT"
               (change)="onSelectedEstado(selectEstadoOT.value)">
         <option *ngFor="let estado of estados"
-                value={{estado.nombre}}>{{estado.nombre}}
+                value={{estado.nombre}}>{{ estado.nombre }}
         </option>
       </select>
     </clr-select-container>
@@ -19,15 +19,15 @@
       <tbody>
       <tr>
         <th class="info-table-header">Tipo Mantenimiento:</th>
-        <td>{{tipoServicio}} </td>
+        <td>{{ tipoServicio }}</td>
       </tr>
       <tr>
         <th class="info-table-header">Persona que reporta el problema:</th>
-        <td>{{responsable}}</td>
+        <td>{{ responsable }}</td>
       </tr>
       <tr>
         <th class="info-table-header">Descripción del Problema:</th>
-        <td>{{diagnostico}}</td>
+        <td>{{ diagnostico }}</td>
       </tr>
       </tbody>
     </table>
@@ -37,9 +37,9 @@
   <!-- información del equipo-->
   <h4 class="form-mantenimiento-sub-title">Información del Equipo</h4>
   <!--    estado del equipo-->
-  <div class="clr-col-3">
+  <div class="clr-col-8" *ngIf="equipo">
     <clr-select-container>
-      <label>Estado</label>
+      <label>Estado del Equipo</label>
       <select clrSelect name="estado" [(ngModel)]="equipo.estado">
         <option value="Operativo">Operativo</option>
         <option value="Inoperativo">Inoperativo</option>
@@ -59,32 +59,72 @@
       <th class=" table-header">Ubicación</th>
       <th class=" table-header">Representante</th>
       <th class=" table-header">Fecha Garantia</th>
-<!--      <th class=" table-header left">Contrato</th>-->
+      <!--      <th class=" table-header left">Contrato</th>-->
     </tr>
     </thead>
     <tbody>
     <tr>
-      <td class="table-column left">{{equipo?.numeroSerie}}</td>
-      <td class="table-column left">{{equipo?.numeroPatrimonial}}</td>
-      <td class="table-column left">{{equipo?.tipoEquipo?.tipo}}</td>
-      <td class="table-column">{{equipo?.marca?.marca}}</td>
-      <td class="table-column">{{equipo?.modelo?.modelo}}</td>
-      <td class="table-column">{{equipo?.descripcionEquipo}}</td>
+      <td class="table-column left">{{ equipo?.numeroSerie }}</td>
+      <td class="table-column left">{{ equipo?.numeroPatrimonial }}</td>
+      <td class="table-column left">{{ equipo?.tipoEquipo?.tipo }}</td>
+      <td class="table-column">{{ equipo?.marca?.marca }}</td>
+      <td class="table-column">{{ equipo?.modelo?.modelo }}</td>
+      <td class="table-column">{{ equipo?.descripcionEquipo }}</td>
       <td
-        class="table-column">{{ equipo?.ubicacion?.bloque ? equipo?.ubicacion?.bloque + ' ' : ''  }}
-        {{equipo?.ubicacion?.nivel ? equipo?.ubicacion?.nivel + ' ' : '' }}
-        {{equipo?.ubicacion?.numeroSala ? equipo?.ubicacion?.numeroSala + ' ' : '' }}</td>
-      <td class="table-column">{{equipo?.representante.nombre}}</td>
-      <td class="table-column">{{equipo?.fechaVenGarantia}}</td>
-<!--      <td class=" table-columnleft">{{equipo?.contrato.numeroContrato}}</td>-->
+        class="table-column">{{ equipo?.ubicacion?.bloque ? equipo?.ubicacion?.bloque + ' ' : '' }}
+        {{ equipo?.ubicacion?.nivel ? equipo?.ubicacion?.nivel + ' ' : '' }}
+        {{ equipo?.ubicacion?.numeroSala ? equipo?.ubicacion?.numeroSala + ' ' : '' }}
+      </td>
+      <td class="table-column">{{ equipo?.representante.nombre }}</td>
+      <td class="table-column">{{ equipo?.fechaVenGarantia }}</td>
+      <!--      <td class=" table-columnleft">{{equipo?.contrato.numeroContrato}}</td>-->
     </tr>
     </tbody>
   </table>
 
   <br>
   <hr>
-  <h4 class="form-mantenimiento-sub-title">Repuestos Solicitados</h4>
-  <p class="label-input ">Solicitud Repuesto ID: {{solicitudRepuesto?.id}}</p>
+
+
+  <h4 class="form-orden-trabajo-sub-title">Repuestos Solicitados</h4>
+  <div class="clr-row">
+    <div class="alert alert-danger" *ngIf="repError">
+      <div class="alert-items">
+        <div class="alert-item static">
+          <div class="alert-icon-wrapper">
+            <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+          </div>
+          <span class="alert-text">{{ repErrorMessage }}</span>
+        </div>
+      </div>
+      <button type="button" class="close" aria-label="Close" (click)="repError = false">
+        <clr-icon aria-hidden="true" shape="close"></clr-icon>
+      </button>
+    </div>
+  </div>
+  <div class="clr-col-8">
+    <clr-select-container>
+      <label>Solicitud Repuesto:</label>
+      <select clrSelect name="solicitudRepId" [(ngModel)]="solicitudRepId"
+              (ngModelChange)="onSelectedSolicitudRepuesto()">
+        <option>Seleccionar Solicitud ID</option>
+        <option *ngFor="let solicitud of solicitudRepuestoPendientes"
+                value={{solicitud.id}}>{{ solicitud.id }}
+        </option>
+      </select>
+    </clr-select-container>
+  </div>
+  <br/>
+  <div class="card">
+    <div class="btn-group">
+      <button type="button" class="btn btn-sm btn-secondary"
+              (click)="agregarRepuesto()">
+        <clr-icon shape="plus"></clr-icon>
+        Agregar Repuesto
+      </button>
+    </div>
+  </div>
+
   <p-table [value]="solicitudRepuestoDetalles">
     <ng-template pTemplate="header">
       <tr>
@@ -101,17 +141,19 @@
     </ng-template>
     <ng-template pTemplate="body" let-detalle>
       <tr>
-        <td class="table-column" style="text-align: center">{{detalle.repuesto?.codigo}}</td>
-        <td class="table-column">{{detalle.repuesto?.descripcionArticulo}}</td>
-        <td class="table-column">{{detalle.repuesto?.tipoEquipo?.tipo}}</td>
-        <td class="table-column">{{detalle.repuesto?.marca?.marca}}</td>
-        <td class="table-column">{{detalle.repuesto?.modelo?.modelo}}</td>
-        <td class="table-column">{{detalle.repuesto?.representante?.nombre}}</td>
-        <td class="table-column" style="text-align: right">{{detalle.repuesto?.precio}}</td>
-        <td class="table-column" style="text-align: center">{{detalle.cantidadSolicitada}}</td>
+        <td class="table-column" style="text-align: center">{{ detalle.repuesto?.codigo }}</td>
+        <td class="table-column">{{ detalle.repuesto?.descripcionArticulo }}</td>
+        <td class="table-column">{{ detalle.repuesto?.tipoEquipo?.tipo }}</td>
+        <td class="table-column">{{ detalle.repuesto?.marca?.marca }}</td>
+        <td class="table-column">{{ detalle.repuesto?.modelo?.modelo }}</td>
+        <td class="table-column">{{ detalle.repuesto?.representante?.nombre }}</td>
+        <td class="table-column" style="text-align: right">{{ detalle.repuesto?.precio }}</td>
+        <td class="table-column" style="text-align: center">{{ detalle.cantidadSolicitada }}</td>
         <td>
           <button type="button" pButton pRipple icon="pi pi-pencil" class="p-button-success"
                   (click)="editarRepuesto(detalle)"></button>
+          <button type="button" pButton pRipple icon="pi pi-trash" class="p-button-danger"
+                  (click)="eliminarDetalleRepuesto(detalle)"></button>
         </td>
       </tr>
     </ng-template>
@@ -128,7 +170,7 @@
           <div class="alert-icon-wrapper">
             <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
           </div>
-          <span class="alert-text">{{errorMessage}}</span>
+          <span class="alert-text">{{ errorMessage }}</span>
         </div>
       </div>
       <button type="button" class="close" aria-label="Close" (click)="error = false">
@@ -147,60 +189,62 @@
         <th class="table-header">Nombre del Técnico</th>
         <th class="table-header">Tipo Servicio</th>
         <th class="table-header">Tarea Realizada</th>
-        <th class="table-header">Estado del Equipo</th>
         <th style="width:6rem"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-servicio>
       <tr>
-        <td class="table-column" style="text-align: center">{{servicio?.fechaMantenimiento}}</td>
-        <td class="table-column">{{servicio?.numeroOrdenServicio}}</td>
-        <td class="table-column">{{servicio?.informeNumero}}</td>
-        <td class="table-column">{{servicio?.nombreTecnico}}</td>
-        <td class="table-column">{{servicio?.tipoServicio}}</td>
-        <td class="table-column" style="text-align: right">{{servicio?.tareaRealizada}}</td>
-        <td class="table-column" style="text-align: center">{{servicio.estadoEquipo}}</td>
+        <td class="table-column" style="text-align: center">{{ servicio?.fechaMantenimiento }}</td>
+        <td class="table-column">{{ servicio?.numeroOrdenServicio }}</td>
+        <td class="table-column">{{ servicio?.informeNumero }}</td>
+        <td class="table-column">{{ servicio?.nombreTecnico }}</td>
+        <td class="table-column">{{ servicio?.tipoServicio }}</td>
+        <td class="table-column" style="text-align: right">{{ servicio?.tareaRealizada }}</td>
+        <td>
+          <button type="button" pButton pRipple icon="pi pi-trash" class="p-button-danger"
+                  (click)="eliminarDetalleServicio(servicio)"></button>
+        </td>
       </tr>
     </ng-template>
   </p-table>
   <br/>
+  <div class="clr-row clr-justify-content-start">
+    <div class="clr-col-6">
+      <clr-input-container>
+        <label class="clr-col-5">Nro Orden Servicio:</label>
+        <input clrInput type="text" [(ngModel)]="numeroOrdenServicio" name="nroOrdenServicio"/>
+      </clr-input-container>
 
-  <div class="clr-col-5">
-    <clr-input-container>
-      <label class="clr-col-5">Nro Orden Servicio:</label>
-      <input clrInput type="text" [(ngModel)]="numeroOrdenServicio" name="nroOrdenServicio"/>
-    </clr-input-container>
-  </div>
+      <clr-input-container>
+        <label class="clr-col-8">Nombre del Técnico:</label>
+        <input class="tamanho-medio" clrInput type="text" [(ngModel)]="nombreTecnico" name="nombreTecnico"/>
+      </clr-input-container>
 
-  <div class="clr-col-5">
-    <clr-input-container>
-      <label class="clr-col-5">Informe Nro:</label>
-      <input clrInput type="text" [(ngModel)]="informeNro" name="informeNro" required/>
-      <clr-control-error>El campo es obligatorio</clr-control-error>
-    </clr-input-container>
-  </div>
+    </div>
+    <div class="clr-col-6">
+      <clr-input-container>
+        <label class="clr-col-5">Informe Nro:</label>
+        <input clrInput type="text" [(ngModel)]="informeNro" name="informeNro"/>
+      </clr-input-container>
+    </div>
 
-  <div class="clr-col-8">
-    <clr-textarea-container>
-      <label class="clr-col-8">Tarea Realizada:</label>
-      <textarea class="tamanho-total clr-col-6" clrTextarea [(ngModel)]="tareaRealizada" name="tareaRealizada" required>
+    <div class="clr-col-10">
+      <clr-textarea-container>
+        <label class="clr-col-8">Tarea Realizada:</label>
+        <textarea class="tamanho-total clr-col-6" clrTextarea [(ngModel)]="tareaRealizada" name="tareaRealizada">
       </textarea>
-      <clr-control-error>El campo es obligatorio</clr-control-error>
-    </clr-textarea-container>
-
-    <clr-input-container>
-      <label class="clr-col-8">Nombre del Técnico:</label>
-      <input class="tamanho-medio" clrInput type="text" [(ngModel)]="nombreTecnico" name="nombreTecnico"/>
-    </clr-input-container>
-
-    <clr-select-container>
-      <label>Estado del Equipo</label>
-      <select clrSelect name="estadoEq" [(ngModel)]="estadoEquipo">
-        <option value="Operativo">Operativo</option>
-        <option value="Inoperativo">Inoperativo</option>
-        <option value="Irreparable">Irreparable</option>
-      </select>
-    </clr-select-container>
+      </clr-textarea-container>
+    </div>
+    <br><br>
+    <div class="clr-col-5">
+      <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-secondary"
+                (click)="agregarServiciosDetalles()">
+          <clr-icon shape="plus"></clr-icon>
+          Agregar Servicios Realizdos
+        </button>
+      </div>
+    </div>
   </div>
   <br/><br/>
   <div class="clr-row clr-justify-content-start">
@@ -222,8 +266,7 @@
 <app-solicitud-repuesto-detalle *ngIf="modalAddEditDetalleOpen"
                                 [solicitudRepuesto]="solicitudRepuesto"
                                 [solicitudRepuestoDetalle]="detalleSeleccionado"
-                                [isEditRepuesto]="true"
-                                [isAtenderOT]="true"
+                                [isEditRepuesto]="false"
                                 (detalleRepuestoToUpdate)="addEditRepuesto($event)"
                                 (cancelAddEditRepuesto)="onCancelAddEditRepuesto($event)">
 </app-solicitud-repuesto-detalle>

@@ -1,6 +1,6 @@
 <!--Modal para agregar o editar los datos de un repuesto-->
 <clr-modal [(clrModalOpen)]="modalRepuestoOpen" [clrModalClosable]="false"
-           [clrModalSize]="'lg'">
+           [clrModalSize]="'lg'" xmlns="http://www.w3.org/1999/html">
   <h3 class="modal-title form-repuesto-title">{{modalRepuestoTitle}}</h3>
   <div class="modal-body">
     <!-- info -->
@@ -34,20 +34,25 @@
     </div>
 
     <form clrForm >
+
+      <div *ngIf="!isEditRepuesto">
+        <div *ngIf="mostrarRep">
+          <label class="clr-col-1 clr-align-self-end label-input">Repuestos Encontrados:</label>
+          <div class="clr-select-wrapper">
+            <select class="clr-select" name="repExistenteId" [(ngModel)]="repExistenteId"
+                    (ngModelChange)="onSelectRepuesto()">
+              <option disabled>Seleccionar Repuesto Existente</option>
+              <option *ngFor="let repuesto of repuestos"
+                      value={{repuesto.id}}>{{repuesto.descripcionArticulo}}
+            </select>
+          </div>
+        </div>
+      </div>
+
       <div class="clr-row clr-justify-content-start">
         <!--columna izquierda-->
         <div class="clr-col-6">
           <div *ngIf="!isEditRepuesto">
-            <div *ngIf="mostrarRep">
-              <label class="clr-col-5">Repuestos Existentes</label>
-              <select clrSelect name="repExistenteId" [(ngModel)]="repExistenteId"
-                      (ngModelChange)="onSelectRepuesto()">
-                <option disabled>Seleccionar Repuesto</option>
-                <option *ngFor="let repuesto of repuestos"
-                        value={{repuesto.id}}>{{repuesto.descripcionArticulo}}
-                </option>
-              </select>
-            </div>
 
             <clr-textarea-container>
               <label class="clr-col-5">Descripción:</label>
@@ -85,7 +90,7 @@
           <clr-input-container>
             <label class="clr-col-5">Cant. Adquirida:</label>
             <input class="tamanho-total clr-col-8" clrInput type="text"
-                   [(ngModel)]="cantAdquirida" name="cantAdquirida" [disabled]="!isAtenderOT"/>
+                   [(ngModel)]="cantAdquirida" name="cantAdquirida" [disabled]="readonlyField"/>
           </clr-input-container>
 
           <clr-select-container>
@@ -117,14 +122,14 @@
           <clr-input-container>
             <label class="clr-col-5">Código:</label>
             <input class="tamanho-total clr-col-8" clrInput type="text" id="codigo"
-                   name="codigo" [(ngModel)]="codigo" required [disabled]="isAtenderOT"/>
+                   name="codigo" [(ngModel)]="codigo" required [disabled]="readonlyField"/>
             <clr-control-error>El campo es obligatorio</clr-control-error>
           </clr-input-container>
 
           <clr-input-container>
             <label class="clr-col-5">Cant. Usada:</label>
             <input class="tamanho-total clr-col-8" clrInput type="text"
-                   [(ngModel)]="cantidadUsada" name="cantidadUsada" [disabled]="!isAtenderOT"/>
+                   [(ngModel)]="cantidadUsada" name="cantidadUsada" [disabled]="readonlyField"/>
           </clr-input-container>
 
           <clr-input-container>

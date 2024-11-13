@@ -38,7 +38,7 @@ export class ListaOrdenTrabajoComponent implements OnInit {
     this.info = false;
     this.error = false;
     this.selectedOrdenTrabajo = null;
-    this.tipoSeleccionado = 'Seleccione una opción';
+    this.tipoSeleccionado = 'TODOS';
     this.getTipoServicios();
     this.getAllOrdenTrabajo();
   }
@@ -96,7 +96,7 @@ export class ListaOrdenTrabajoComponent implements OnInit {
   onSelectedTipoMantinieminto(): void {
     this.info = false;
     this.error = false;
-    if (this.tipoSeleccionado == 'Seleccione una opción') {
+    if (this.tipoSeleccionado == 'TODOS') {
       this.getAllOrdenTrabajo();
     } else {
       this.getAllOrdenTrabajoByTipoMantenimiento(this.tipoSeleccionado);

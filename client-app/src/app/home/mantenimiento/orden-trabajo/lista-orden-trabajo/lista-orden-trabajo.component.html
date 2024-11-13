@@ -43,7 +43,7 @@
       <div class="clr-select-wrapper">
         <select class="clr-select" id="tipo-servicio" name="tipoServicio" [(ngModel)]="tipoSeleccionado"
                 (ngModelChange)="onSelectedTipoMantinieminto()">
-          <option>Seleccione una opción</option>
+          <option>TODOS</option>
           <option *ngFor="let tipo of tipoServicios"
                   value={{tipo.nombre}}>{{tipo.nombre}}
         </select>

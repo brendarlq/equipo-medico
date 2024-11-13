@@ -38,7 +38,7 @@ export class EditEquipoComponent implements OnInit {
   fechaVenGarantia: any;
   fechaInstalacion: any;
   fechaCompra: any;
-  contrato: Contrato;
+  contratos = new Array<Contrato>();
 
 
   // modal para agregar/editar representante
@@ -108,7 +108,7 @@ export class EditEquipoComponent implements OnInit {
       ).subscribe(equipo => {
         this.equipo = new Equipo(equipo.id, equipo.numeroSerie, equipo.numeroPatrimonial, equipo.numeroLote,
           equipo.estado, equipo.versionSw, equipo.descripcionEquipo, equipo.costo, equipo.representante,
-          equipo.tipoEquipo, equipo.modelo, equipo.marca, equipo.ubicacion, equipo.licitacionCompra, equipo.contrato,
+          equipo.tipoEquipo, equipo.modelo, equipo.marca, equipo.ubicacion, equipo.licitacionCompra, equipo.contratos,
           equipo.fechaFabricacion, equipo.fechaVenGarantia, equipo.fechaInstalacion, equipo.fechaCompra);
         this.camposAEditar(this.equipo);
       },
@@ -249,13 +249,14 @@ export class EditEquipoComponent implements OnInit {
       this.ubicacionSeleccionada = equipo.ubicacion;
       this.ubicacionId = equipo.ubicacion.id;
     }
-    if (equipo.contrato != null) {
-      this.contrato = new Contrato(equipo.contrato.id, equipo.contrato.numeroContrato, equipo.contrato.nombreLicitacion,
-        equipo.contrato.tipoContrato, equipo.contrato.tipoProcedimiento, equipo.contrato.numeroProcedimiento,
-        equipo.contrato.estadoContrato, equipo.contrato.convocante, equipo.contrato.equipos, equipo.contrato.fechaInicio,
-        equipo.contrato.fechaFin);
+    if (equipo.contratos != null) {
+      this.contratos = equipo.contratos;
+      // this.contrato = new Contrato(equipo.contratos.id, equipo.contratos.numeroContrato, equipo.contratos.nombreLicitacion,
+      //   equipo.contratos.tipoContrato, equipo.contratos.tipoProcedimiento, equipo.contratos.numeroProcedimiento,
+      //   equipo.contratos.estadoContrato, equipo.contratos.convocante, equipo.contratos.equipos, equipo.contratos.fechaInicio,
+      //   equipo.contratos.fechaFin);
     } else {
-      this.contrato = null;
+      this.contratos = new Array<Contrato>();
     }
 
   }
@@ -467,7 +468,7 @@ export class EditEquipoComponent implements OnInit {
 
     this.equipo = new Equipo( this.equipoId, this.numeroSerie, this.numeroPatrimonial, this.numeroLote, this.estado,
       this.versionSw, this.descripcionEquipo, this.costo, this.repreSeleccionado, this.tipoSeleccionado,
-      this.modeloSeleccionado, this.marcaSeleccionada, this.ubicacionSeleccionada, this.licitacionCompra, this.contrato,
+      this.modeloSeleccionado, this.marcaSeleccionada, this.ubicacionSeleccionada, this.licitacionCompra, this.contratos,
       this.fechaFabricacion, this.fechaVenGarantia, this.fechaInstalacion, this.fechaCompra);
     this.saveEquipo(this.equipo);
   }

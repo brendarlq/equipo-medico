@@ -78,7 +78,7 @@
     <!--    estado del equipo-->
     <div class="clr-col-3"  *ngIf="selectedEquipo">
       <clr-select-container>
-        <label>Estado</label>
+        <label>Estado del Equipo</label>
         <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
           <option value="Operativo">Operativo</option>
           <option value="Inoperativo">Inoperativo</option>
@@ -90,7 +90,7 @@
     <!--    botón eliminar-->
     <div class="clr-col-1 clr-align-self-end" *ngIf="selectedEquipo">
       <a type="button" class="btn btn-sm btn-danger-outline"
-         (click)="clearDatosEquipos()">
+         (click)="deleteEquipo()">
         <clr-icon shape="trash"></clr-icon>
       </a>
     </div>
@@ -125,91 +125,12 @@
     </tr>
     </tbody>
   </table>
-
-  <br/>
-  <hr>
-  <h4 class="form-orden-trabajo-sub-title">Repuestos Solicitados</h4>
-  <div class="clr-row">
-    <div class="alert alert-danger" *ngIf="repError">
-      <div class="alert-items">
-        <div class="alert-item static">
-          <div class="alert-icon-wrapper">
-            <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
-          </div>
-          <span class="alert-text">{{repErrorMessage}}</span>
-        </div>
-      </div>
-      <button type="button" class="close" aria-label="Close" (click)="repError = false">
-        <clr-icon aria-hidden="true" shape="close"></clr-icon>
-      </button>
-    </div>
-  </div>
-  <div class="clr-col-8">
-    <clr-select-container>
-      <label>Solicitud Repuesto:</label>
-      <select clrSelect name="solicitudRepId" [(ngModel)]="solicitudRepId"
-              (ngModelChange)="onSelectedSolicitudRepuesto()">
-        <option>Seleccionar Solicitud ID</option>
-        <option *ngFor="let solicitud of solicitudRepuestoPendientes"
-                value={{solicitud.id}}>{{solicitud.id}}
-        </option>
-      </select>
-    </clr-select-container>
-    <div *ngIf="solicitudRepuesto != null">
-      <p class="label-input ">Solicitud Repuesto ID: {{solicitudRepuesto?.id}}</p>
-    </div>
-
-  </div>
-  <br/>
-  <div class="card">
-    <div class="btn-group">
-      <button type="button" class="btn btn-sm btn-secondary"
-              (click)="agregarRepuesto()">
-        <clr-icon shape="plus"></clr-icon>
-        Agregar Repuesto
-      </button>
-    </div>
-
-    <p-table [value]="solicitudRepuestoDetalles">
-      <ng-template pTemplate="header">
-        <tr>
-          <th class="table-header">Código</th>
-          <th class="table-header">Descripción</th>
-          <th class="table-header">Tipo</th>
-          <th class="table-header">Marca</th>
-          <th class="table-header">Modelo</th>
-          <th class="table-header">Representante</th>
-          <th class="table-header">Precio</th>
-          <th class="table-header">Cantidad Solicitada</th>
-          <th style="width:6rem"></th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-detalle>
-        <tr>
-          <td class="table-column" style="text-align: center">{{detalle.repuesto?.codigo}}</td>
-          <td class="table-column">{{detalle.repuesto?.descripcionArticulo}}</td>
-          <td class="table-column">{{detalle.repuesto?.tipoEquipo?.tipo}}</td>
-          <td class="table-column">{{detalle.repuesto?.marca?.marca}}</td>
-          <td class="table-column">{{detalle.repuesto?.modelo?.modelo}}</td>
-          <td class="table-column">{{detalle.repuesto?.representante?.nombre}}</td>
-          <td class="table-column" style="text-align: right">{{detalle.repuesto?.precio}}</td>
-          <td class="table-column" style="text-align: center">{{detalle.cantidadSolicitada}}</td>
-          <td>
-            <button type="button" pButton pRipple icon="pi pi-pencil" class="p-button-success"
-                    (click)="editarRepuesto(detalle)"></button>
-            <button type="button" pButton pRipple icon="pi pi-trash" class="p-button-danger"
-                    (click)="eliminarDetalleRepuesto(detalle, true)"></button>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
   <br/>
   <hr>
   <div class="clr-col-8">
     <clr-input-container>
-      <label>Estado:</label>
-      <input clrInput type="text" [(ngModel)]="estado" name="estado" required/>
+      <label>Estado de la OT:</label>
+      <input clrInput type="text" [(ngModel)]="estadoOT" name="estadoOT" required/>
       <clr-control-error>El campo es obligatorio</clr-control-error>
     </clr-input-container>
 

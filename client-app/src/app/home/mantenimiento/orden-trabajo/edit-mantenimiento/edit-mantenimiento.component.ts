@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {EstadoOrdenTrabajoLista, OrdenTrabajo} from "../../../../domain/orden-trabajo";
+import {EstadoOrdenTrabajoLista, OrdenTrabajo, TipoServicio} from "../../../../domain/orden-trabajo";
 import {Equipo} from "../../../../domain/equipo";
 import {SolicitudRepuesto} from "../../../../domain/solicitud-repuesto";
 import {Mantenimiento} from "../../../../domain/mantenimiento";
@@ -14,6 +14,7 @@ import {EstadoOrdenTrabajo} from "../../../../utils/estado-orden";
 import {EstadoSolicitudRepuesto} from "../../../../utils/estado-solicitud-repuesto";
 import {EstadoEquipo} from "../../../../utils/estado-equipo";
 import {SolicitudRepuestoService} from "../../../../service/solicitud-repuesto.service";
+import {SolicitudRepuestoDetalleService} from "../../../../service/solicitud-repuesto-detalle.service";
 
 @Component({
   selector: 'app-edit-mantenimiento',
@@ -31,8 +32,24 @@ export class EditMantenimientoComponent implements OnInit {
   responsable: string;
   fechaRealizacion: any;
   equipo: Equipo;
-  solicitudRepuesto: SolicitudRepuesto;
   estados: EstadoOrdenTrabajoLista[];
+
+  // solicitud repuesto
+  solicitudRepId: any;
+  solicitudRepuesto: SolicitudRepuesto;
+  solicitudRepuestoPendientes: SolicitudRepuesto[];
+  esNuevaSolicitudRepuesto: boolean;
+  fueActualizada: boolean;
+
+  // Tipo de Servicios
+  tipoServicios: TipoServicio[];
+
+  // modal para agregar/editar detalle de repuesto a la solicitud
+  modalAddEditDetalleOpen = false;
+  detalleSeleccionado: SolicitudRepuestoDetalle;
+  isEditDetalle: boolean;
+  solicitudRepuestoDetalles = new Array<SolicitudRepuestoDetalle>();
+  detallesAEliminar = new Array<SolicitudRepuestoDetalle>();
 
   // mantenimiento
   mantenimientoId: number;
@@ -46,26 +63,27 @@ export class EditMantenimientoComponent implements OnInit {
   servicioRealizadoList: Mantenimiento[];
   readOnlyField: boolean;
 
-  // modal para agregar/editar detalle de repuesto a la solicitud
-  modalAddEditDetalleOpen = false;
-  detalleSeleccionado: SolicitudRepuestoDetalle;
-  solicitudRepuestoDetalles = new Array<SolicitudRepuestoDetalle>();
-
   // Errors
   error: boolean;
   errorMessage: string;
+  repErrorMessage: string;
+  repError: boolean;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private equipoService: EquipoService,
               private ordenTrabajoService: OrdenTrabajoService,
               private manteniminetoService: ManteniminetoService,
-              private solicitudRepuestoService: SolicitudRepuestoService) {
+              private solicitudRepuestoService: SolicitudRepuestoService,
+              private solicitudRepuestoDetalleService: SolicitudRepuestoDetalleService) {
   }
 
   ngOnInit() {
     this.fechaMantenimiento = new Date();
+    this.esNuevaSolicitudRepuesto = false;
+    this.fueActualizada = false;
     this.getEstadosOrdenTrabajo();
+    this.getAllSolicitudRepuestosPendientes();
     this.route.paramMap
       .pipe(
         switchMap((params: ParamMap) => this.ordenTrabajoService.getOrdenTrabajoById(+params.get('id')))
@@ -93,6 +111,22 @@ export class EditMantenimientoComponent implements OnInit {
         this.errorMessage = error.error;
         console.log(this.errorMessage)
         this.estados = [];
+      }
+    );
+  }
+
+  /**
+   * Se obtienen todas las solicitudes de repuestos con estado pendiente
+   */
+  getAllSolicitudRepuestosPendientes(): void {
+    this.solicitudRepuestoService.getAllSolicitudRepuestosPendientes().subscribe(
+      solicitudesPendientes => {
+        this.solicitudRepuestoPendientes = solicitudesPendientes;
+      },
+      error => {
+        this.errorMessage = error.error;
+        console.log(this.errorMessage)
+        this.tipoServicios = [];
       }
     );
   }
@@ -130,6 +164,11 @@ export class EditMantenimientoComponent implements OnInit {
     if(this.estadoOT === EstadoOrdenTrabajo.FINALIZADO) {
       this.readOnlyField = true;
     }
+    this.solicitudRepuesto = orden.solicitudRepuesto;
+    if (this.solicitudRepuesto != null) {
+      this.solicitudRepId = this.solicitudRepuesto.id.toString();
+      this.solicitudRepuestoDetalles = this.solicitudRepuesto.solicitudRepuestoDetalles;
+    }
   }
 
   formateoFechasServicio() {
@@ -140,22 +179,95 @@ export class EditMantenimientoComponent implements OnInit {
   }
 
   /**
-   * Cuando se selecciona un detalle repuesto para editar sus datos.
+   * Se selecciona una solicitud de respuestos para la orden de trabajo.
+   * Automaticamente se realiza la busqueda de esa solicitud de repuestos para obtner la información relacionada a la misma.
    */
-  editarRepuesto(repuesto: SolicitudRepuestoDetalle): void {
-    this.detalleSeleccionado = repuesto;
-    this.eliminarDetalleRepuesto(this.detalleSeleccionado);
+  onSelectedSolicitudRepuesto(): void {
+    if (this.solicitudRepId != "Seleccionar Solicitud") {
+      this.buscarSolicitudRepuestoById(+this.solicitudRepId);
+      this.fueActualizada = true;
+    } else {
+      if (this.solicitudRepuesto != null) {
+        this.solicitudRepuesto.estado = EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO;
+        this.updateSolicitudRepuesto(this.solicitudRepuesto, false, false);
+        this.solicitudRepuesto = null;
+      } else {
+        this.solicitudRepId = null;
+        this.detalleSeleccionado = null;
+        this.solicitudRepuestoDetalles = [];
+        this.repErrorMessage = '';
+        this.repError = false;
+      }
+    }
+  }
+
+  /**
+   *Se busca la solicitud de repuestos que coincida con el id introducido,
+   * si la solicitud existe, se muestra la lista de repuestos agregados,
+   * si no existe se muestra un mensaje al usuario.
+   */
+  buscarSolicitudRepuestoById(solicitudRepId: number) {
+    this.solicitudRepuestoService.getSolicitudRepuestoById(solicitudRepId).subscribe(
+      solicitudRep => {
+        this.solicitudRepuesto = solicitudRep;
+        this.solicitudRepuestoDetalles = this.solicitudRepuesto.solicitudRepuestoDetalles;
+        this.repError = false;
+        this.fueActualizada = true;
+      },
+      error => {
+        this.repErrorMessage = error.error;
+        console.log(error.error + error.message);
+        this.repError = true;
+      }
+    );
+  }
+
+  /**
+   * Cuando se presiona el botón para crear un nuevo detalle repuesto.
+   */
+  agregarRepuesto(): void {
+    this.isEditDetalle = false;
+    this.detalleSeleccionado = null;
     this.modalAddEditDetalleOpen = true;
   }
 
   /**
+   * Cuando se selecciona un detalle repuesto para editar sus datos.
+   */
+  editarRepuesto(repuesto: SolicitudRepuestoDetalle): void {
+    this.detalleSeleccionado = repuesto;
+    this.isEditDetalle = true;
+    this.eliminarDetalleRepuesto(this.detalleSeleccionado, false);
+    this.modalAddEditDetalleOpen = true;
+  }
+
+
+  /**
    * Se quita de la lista de detalles el repuesto que se quiere  editar.
    */
-  eliminarDetalleRepuesto(repuestoSeleccionado: SolicitudRepuestoDetalle): void {
+  eliminarDetalleRepuesto(repuestoSeleccionado: SolicitudRepuestoDetalle, isAccionEliminar: boolean): void {
     for (let i = 0; i < this.solicitudRepuestoDetalles.length; i++) {
       if (repuestoSeleccionado.id === this.solicitudRepuestoDetalles[i].id) {
+        if (isAccionEliminar && this.solicitudRepuesto != null) {
+          this.fueActualizada = true;
+          this.detallesAEliminar.push(this.solicitudRepuestoDetalles[i]);
+        }
         this.solicitudRepuestoDetalles.splice(i, 1);
         break;
+      }
+    }
+
+    if (isAccionEliminar) {
+      if (this.solicitudRepuestoDetalles.length < 1) {
+        // si se eliminaron todos los detalles, se desasocia la solicitud de repuesto a la OT y se cambia el estado a Pendiente
+        // no se eliminan los repuestos asociados a la solicitud de repuesto
+        if (this.solicitudRepuesto != null
+          && this.solicitudRepuesto.estado == EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO) {
+          this.solicitudRepuesto.estado = EstadoSolicitudRepuesto.PENDIENTE;
+          this.detallesAEliminar = [];
+          this.fueActualizada = false;
+          this.updateSolicitudRepuesto(this.solicitudRepuesto, true, true);
+        }
       }
     }
   }
@@ -165,10 +277,10 @@ export class EditMantenimientoComponent implements OnInit {
    * @param value
    */
   addEditRepuesto(value: SolicitudRepuestoDetalle) {
+    this.fueActualizada = true;
     this.solicitudRepuestoDetalles.push(value);
     this.detalleSeleccionado = null;
     this.modalAddEditDetalleOpen = false;
-    this.verificarSolicitudRepuesto();
   }
 
   /**
@@ -177,12 +289,30 @@ export class EditMantenimientoComponent implements OnInit {
    * @param value
    */
   onCancelAddEditRepuesto(value: SolicitudRepuestoDetalle) {
-    if (value != null) {
-      this.solicitudRepuestoDetalles.push(value);
+    if (this.isEditDetalle) {
+      if (this.solicitudRepuesto != null) {
+        this.solicitudRepuestoDetalles = this.solicitudRepuesto.solicitudRepuestoDetalles;
+      }
+      if (value != null) {
+        this.solicitudRepuestoDetalles.push(value);
+      }
+      this.detalleSeleccionado = null;
     }
-    this.detalleSeleccionado = null;
     this.modalAddEditDetalleOpen = false;
   }
+
+  /**
+   * Cuando se cancela la edición de un repuesto, el repuesto seleccionado se agrega de nuevo a la lista de
+   * detalles de la solicitud repuestos.
+   * @param value
+   */
+  // onCancelAddEditRepuesto(value: SolicitudRepuestoDetalle) {
+  //   if (value != null) {
+  //     this.solicitudRepuestoDetalles.push(value);
+  //   }
+  //   this.detalleSeleccionado = null;
+  //   this.modalAddEditDetalleOpen = false;
+  // }
 
   /**
    * Se verifica que todos los repuestos dentro de la solicitud de repuestos se hayan completado la cantidad adquirida
@@ -208,25 +338,85 @@ export class EditMantenimientoComponent implements OnInit {
       this.solicitudRepuesto.estado = EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO ;
     }
 
-    this.uodateSolicitudRepuesto(this.solicitudRepuesto);
+    // this.updateSolicitudRepuesto(this.solicitudRepuesto);
   }
 
   /**
    * Se editan los datos de la solicitud de repuestos seleccionada.
    * @param solicitud
    */
-  uodateSolicitudRepuesto(solicitud: SolicitudRepuesto): void {
+  // uodateSolicitudRepuesto(solicitud: SolicitudRepuesto): void {
+  //   this.solicitudRepuestoService.editarSolicitudRepuesto(solicitud).subscribe(
+  //     // tslint:disable-next-line:no-shadowed-variable
+  //     solicitud => {
+  //       this.solicitudRepuesto = solicitud;
+  //     },
+  //     error => {
+  //       this.errorMessage = error.error;
+  //       console.log(error.error + error.message)
+  //       this.error = true;
+  //     }
+  //   );
+  // }
+
+  updateSolicitudRepuesto(solicitud: SolicitudRepuesto, isDelete: boolean, guardarOT: boolean): void {
     this.solicitudRepuestoService.editarSolicitudRepuesto(solicitud).subscribe(
       // tslint:disable-next-line:no-shadowed-variable
       solicitud => {
         this.solicitudRepuesto = solicitud;
+        if (guardarOT) {
+          this.ordenTrabajo.solicitudRepuesto = this.solicitudRepuesto;
+          //this.saveOrdenTrabajo(this.ordenTrabajo);
+        } else if (isDelete) {
+          this.solicitudRepuesto = null;
+          this.solicitudRepId = null;
+        }
       },
       error => {
         this.errorMessage = error.error;
-        console.log(error.error + error.message)
+        console.log(this.errorMessage)
         this.error = true;
       }
     );
+  }
+
+  /**
+   * Se crea una nueva solicitud de repuestos asociada a la orden de trabajo creada.
+   * @param solicitud
+   */
+  saveSolicitudRepuesto(solicitud: SolicitudRepuesto): void {
+    this.solicitudRepuestoService.crearSolicitudRepuesto(solicitud).subscribe(
+      // tslint:disable-next-line:no-shadowed-variable
+      solicitud => {
+        this.solicitudRepuesto = solicitud;
+        this.solicitudRepuestoService.emitExisteSolicitudRepuesto(true);
+        this.ordenTrabajo.solicitudRepuesto = this.solicitudRepuesto;
+       // this.saveOrdenTrabajo(this.ordenTrabajo);
+      },
+      error => {
+        this.errorMessage = error.error;
+        console.log(this.errorMessage)
+        this.error = true;
+      }
+    );
+  }
+
+  /**
+   * Se eliminan los detalles de la solicitud de repuestos, agregados anteriormente a la lista de eliminados
+   */
+  eliminarDetallesdelaSolicitudRepuesto(): void {
+    // for (let i = 0; i < this.detallesAEliminar.length; i++) {
+    //   let detalle = this.detallesAEliminar[i];
+    //   this.solicitudRepuestoDetalleService.eliminarSolicitudRepuestoDetalle(detalle).subscribe(
+    //     // tslint:disable-next-line:no-shadowed-variable
+    //     respuesta => {
+    //       console.log("se eliminó el detalle: ", detalle);
+    //     },
+    //     error => {
+    //       console.log(error.error)
+    //     }
+    //   );
+    // }
   }
 
   /**

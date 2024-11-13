@@ -80,10 +80,50 @@
     </tbody>
   </table>
 
-  <br>
+  <br/>
   <hr>
-  <h4 class="form-mantenimiento-sub-title">Repuestos Solicitados</h4>
-  <p class="label-input ">Solicitud Repuesto ID: {{solicitudRepuesto?.id}}</p>
+  <h4 class="form-orden-trabajo-sub-title">Repuestos Solicitados</h4>
+  <div class="clr-row">
+    <div class="alert alert-danger" *ngIf="repError">
+      <div class="alert-items">
+        <div class="alert-item static">
+          <div class="alert-icon-wrapper">
+            <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+          </div>
+          <span class="alert-text">{{repErrorMessage}}</span>
+        </div>
+      </div>
+      <button type="button" class="close" aria-label="Close" (click)="repError = false">
+        <clr-icon aria-hidden="true" shape="close"></clr-icon>
+      </button>
+    </div>
+  </div>
+  <div class="clr-col-8">
+    <clr-select-container>
+      <label>Solicitud Repuesto:</label>
+      <select clrSelect name="solicitudRepId" [(ngModel)]="solicitudRepId"
+              (ngModelChange)="onSelectedSolicitudRepuesto()">
+        <option>Seleccionar Solicitud ID</option>
+        <option *ngFor="let solicitud of solicitudRepuestoPendientes"
+                value={{solicitud.id}}>{{solicitud.id}}
+        </option>
+      </select>
+    </clr-select-container>
+    <div *ngIf="solicitudRepuesto != null">
+      <p class="label-input ">Solicitud Repuesto ID: {{solicitudRepuesto?.id}}</p>
+    </div>
+
+  </div>
+  <br/>
+  <div class="card">
+    <div class="btn-group">
+      <button type="button" class="btn btn-sm btn-secondary"
+              (click)="agregarRepuesto()">
+        <clr-icon shape="plus"></clr-icon>
+        Agregar Repuesto
+      </button>
+    </div>
+  </div>
   <p-table [value]="solicitudRepuestoDetalles">
     <ng-template pTemplate="header">
       <tr>
@@ -214,14 +254,14 @@
       Cancel
     </a>
   </div>
+
 </form>
 
 <!--Modal para agregar o editar los datos de un repuesto-->
 <app-solicitud-repuesto-detalle *ngIf="modalAddEditDetalleOpen"
                                 [solicitudRepuesto]="solicitudRepuesto"
                                 [solicitudRepuestoDetalle]="detalleSeleccionado"
-                                [isEditRepuesto]="true"
-                                [isAtenderOT]="true"
+                                [isEditRepuesto]="false"
                                 (detalleRepuestoToUpdate)="addEditRepuesto($event)"
                                 (cancelAddEditRepuesto)="onCancelAddEditRepuesto($event)">
 </app-solicitud-repuesto-detalle>

@@ -30,20 +30,21 @@
 </div>
 
 <form clrForm>
+
+  <div *ngIf="mostrarRep">
+    <label class="clr-col-1 clr-align-self-end label-input">Repuestos Encontrados:</label>
+    <div class="clr-select-wrapper">
+      <select class="clr-select" name="repExistenteId" [(ngModel)]="repExistenteId"
+              (ngModelChange)="onSelectRepuesto()">
+        <option disabled>Seleccionar Repuesto Existente</option>
+        <option *ngFor="let repuesto of repuestos"
+                value={{repuesto.id}}>{{repuesto.descripcionArticulo}}
+      </select>
+    </div>
+  </div>
   <div class="clr-row clr-justify-content-start">
     <!--columna izquierda-->
     <div class="clr-col-6">
-      <div *ngIf="mostrarRep">
-        <label class="clr-col-5">Repuestos Existentes</label>
-        <select clrSelect name="repExistenteId" [(ngModel)]="repExistenteId"
-                (ngModelChange)="onSelectRepuesto()">
-          <option disabled>Seleccionar Repuesto</option>
-          <option *ngFor="let repuesto of repuestos"
-                  value={{repuesto.id}}>{{repuesto.descripcionArticulo}}
-          </option>
-        </select>
-      </div>
-
       <clr-textarea-container>
         <label class="clr-col-5">Descripción:</label>
         <textarea class="tamanho-total" clrTextarea [(ngModel)]="descripcion"

@@ -41,7 +41,6 @@ export class SolicitudRepuestoDetalleComponent implements OnInit {
   // Detalle solicitud repuesto
   @Input() solicitudRepuesto: SolicitudRepuesto
   @Input() solicitudRepuestoDetalle: SolicitudRepuestoDetalle
-  @Input() isAtenderOT: boolean;
   @Input() isEditRepuesto: boolean;
   @Output() detalleRepuestoToUpdate: EventEmitter<any> = new EventEmitter();
   @Output() cancelAddEditRepuesto: EventEmitter<any> = new EventEmitter();
@@ -246,7 +245,6 @@ export class SolicitudRepuestoDetalleComponent implements OnInit {
     if (repuesto.representante != null) {
       this.repreId = repuesto.representante.id;
     }
-    this.readonlyField = this.isAtenderOT;
     this.isEditRepuesto = true;
     if(this.codigo != null && this.descripcion != "") {
       this.addBtnHabilitado = true;
@@ -386,6 +384,7 @@ export class SolicitudRepuestoDetalleComponent implements OnInit {
         if(list.length > 0) {
           this.repuestos = list;
           this.mostrarRep = true;
+          this.repExistenteId = "Seleccionar Repuesto Existente"
         }
 
         this.addBtnHabilitado = true;

@@ -21,7 +21,7 @@ export class Equipo {
               public marca: Marca,
               public ubicacion: Ubicacion,
               public licitacionCompra: string,
-              public contrato:Contrato,
+              public contratos: Contrato[],
               public fechaFabricacion?: any,
               public fechaVenGarantia?: any,
               public fechaInstalacion?: any,

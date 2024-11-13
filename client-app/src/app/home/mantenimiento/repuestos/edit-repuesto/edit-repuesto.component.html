@@ -35,10 +35,47 @@
   <div class="clr-row clr-justify-content-start">
     <!--columna izquierda-->
     <div class="clr-col-6">
+      <clr-textarea-container>
+        <label class="clr-col-5">Descripción:</label>
+        <textarea class="tamanho-total" clrTextarea [(ngModel)]="descripcion" name="description" required></textarea>
+        <clr-control-error>El campo es obligatorio</clr-control-error>
+      </clr-textarea-container>
+
+      <clr-input-container>
+        <label class="clr-col-8">Cant. Existente:</label>
+        <input class="tamanho-total clr-col-6" clrInput type="text" [(ngModel)]="cantExistente" name="cantExistente"/>
+      </clr-input-container>
+
+      <clr-select-container>
+        <label class="clr-col-5">Seleccione Marca</label>
+        <select clrSelect name="marcaId" [(ngModel)]="marcaId"
+                (ngModelChange)="onSelectMarca()">
+          <option>Seleccionar Marca</option>
+          <option *ngFor="let marca of marcas"
+                  value={{marca.id}}>{{marca.marca}}
+          </option>
+        </select>
+      </clr-select-container>
+
+      <clr-select-container>
+        <label class="clr-col-5">Modelo:</label>
+        <select clrSelect name="tipoId" [(ngModel)]="modeloId"
+                (ngModelChange)="onSelectModelo()">
+          <option disabled>Seleccionar Modelo</option>
+          <option *ngFor="let modelo of modelos"
+                  value={{modelo.id}}>{{modelo.modelo}}
+          </option>
+        </select>
+      </clr-select-container>
+    </div>
+
+    <!--columna derecha-->
+
+    <div class="clr-col-6">
       <clr-input-container>
         <label class="clr-col-8">Código:</label>
         <input class="tamanho-total clr-col-6" clrInput id="codigo"
-               name="codigo" [(ngModel)]="codigo" disabled/>
+               name="codigo" [(ngModel)]="codigo"/>
       </clr-input-container>
 
       <clr-input-container>
@@ -70,42 +107,6 @@
           <option disabled>Seleccionar Representante</option>
           <option *ngFor="let repre of representantes"
                   value={{repre.id}}>{{repre.nombre}}
-          </option>
-        </select>
-      </clr-select-container>
-    </div>
-
-    <!--columna derecha-->
-    <div class="clr-col-6">
-      <clr-textarea-container>
-        <label class="clr-col-5">Descripción:</label>
-        <textarea class="tamanho-total" clrTextarea [(ngModel)]="descripcion" name="description" required></textarea>
-        <clr-control-error>El campo es obligatorio</clr-control-error>
-      </clr-textarea-container>
-
-      <clr-input-container>
-        <label class="clr-col-8">Cant. Existente:</label>
-        <input class="tamanho-total clr-col-6" clrInput type="text" [(ngModel)]="cantExistente" name="cantExistente"/>
-      </clr-input-container>
-
-      <clr-select-container>
-        <label class="clr-col-5">Seleccione Marca</label>
-        <select clrSelect name="marcaId" [(ngModel)]="marcaId"
-                (ngModelChange)="onSelectMarca()">
-          <option>Seleccionar Marca</option>
-          <option *ngFor="let marca of marcas"
-                  value={{marca.id}}>{{marca.marca}}
-          </option>
-        </select>
-      </clr-select-container>
-
-      <clr-select-container>
-        <label class="clr-col-5">Modelo:</label>
-        <select clrSelect name="tipoId" [(ngModel)]="modeloId"
-                (ngModelChange)="onSelectModelo()">
-          <option disabled>Seleccionar Modelo</option>
-          <option *ngFor="let modelo of modelos"
-                  value={{modelo.id}}>{{modelo.modelo}}
           </option>
         </select>
       </clr-select-container>
