@@ -1,7 +1,7 @@
 package com.mantenimiento.equipomedico.app.entidad;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +14,7 @@ import java.util.List;
  * @author Brenda Quiñonez
  */
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "equipo")
 public class Equipo implements Serializable {
 
@@ -66,7 +67,6 @@ public class Equipo implements Serializable {
     private Ubicacion ubicacion;
 
     @ManyToMany(mappedBy = "equipos")
-    @JsonIgnore
     List<Contrato> contratos;
 
     @Column(name = "licitacion_compra")

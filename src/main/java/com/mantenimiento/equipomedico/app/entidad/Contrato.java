@@ -1,6 +1,8 @@
 package com.mantenimiento.equipomedico.app.entidad;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +16,7 @@ import java.util.List;
  *
  */
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "contrato")
 public class Contrato implements Serializable {
 
@@ -40,6 +43,7 @@ public class Contrato implements Serializable {
 
     @Column(name = "fecha_fin")
     private Date fechaFin;
+
 
     @ManyToMany
     @JoinTable(
