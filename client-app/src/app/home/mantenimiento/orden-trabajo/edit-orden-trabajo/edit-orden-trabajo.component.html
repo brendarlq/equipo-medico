@@ -178,13 +178,3 @@
     </a>
   </div>
 </form>
-
-<!--Modal para agregar o editar los datos de un repuesto-->
-<app-solicitud-repuesto-detalle *ngIf="modalAddEditDetalleOpen"
-                                [solicitudRepuesto]="solicitudRepuesto"
-                                [solicitudRepuestoDetalle]="detalleSeleccionado"
-                                [isEditRepuesto]="isEditDetalle"
-                                [isAtenderOT]="false"
-                                (detalleRepuestoToUpdate)="addEditRepuesto($event)"
-                                (cancelAddEditRepuesto)="onCancelAddEditRepuesto($event)">
-</app-solicitud-repuesto-detalle>
