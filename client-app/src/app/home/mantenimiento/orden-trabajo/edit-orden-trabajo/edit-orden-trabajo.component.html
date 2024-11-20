@@ -57,7 +57,7 @@
       </div>
     </div>
     <!--número patrimonial-->
-    <div class="clr-col-4">
+    <div class="clr-col-3">
       <div class="clr-form-control">
         <label class="tamanho-total clr-col-5 label-input">N. Patrimonial</label>
         <div class="clr-control-container">
@@ -76,10 +76,10 @@
     </div>
 
     <!--    estado del equipo-->
-    <div class="clr-col-3"  *ngIf="selectedEquipo">
+    <div class="clr-col-4"  *ngIf="selectedEquipo">
       <clr-select-container>
-        <label>Estado del Equipo</label>
-        <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
+        <label class="clr-col-5">Estado del Equipo</label>
+        <select class="clr-col-7" clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
           <option value="Operativo">Operativo</option>
           <option value="Inoperativo">Inoperativo</option>
           <option value="Irreparable">Irreparable</option>

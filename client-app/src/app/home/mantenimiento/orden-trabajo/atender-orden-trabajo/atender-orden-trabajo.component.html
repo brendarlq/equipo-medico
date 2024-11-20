@@ -37,10 +37,10 @@
   <!-- información del equipo-->
   <h4 class="form-mantenimiento-sub-title">Información del Equipo</h4>
   <!--    estado del equipo-->
-  <div class="clr-col-8" *ngIf="equipo">
+  <div class="clr-col-8" *ngIf="equipoSeleccionado">
     <clr-select-container>
       <label>Estado del Equipo</label>
-      <select clrSelect name="estado" [(ngModel)]="equipo.estado">
+      <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
         <option value="Operativo">Operativo</option>
         <option value="Inoperativo">Inoperativo</option>
         <option value="Irreparable">Irreparable</option>
@@ -64,19 +64,19 @@
     </thead>
     <tbody>
     <tr>
-      <td class="table-column left">{{ equipo?.numeroSerie }}</td>
-      <td class="table-column left">{{ equipo?.numeroPatrimonial }}</td>
-      <td class="table-column left">{{ equipo?.tipoEquipo?.tipo }}</td>
-      <td class="table-column">{{ equipo?.marca?.marca }}</td>
-      <td class="table-column">{{ equipo?.modelo?.modelo }}</td>
-      <td class="table-column">{{ equipo?.descripcionEquipo }}</td>
+      <td class="table-column left">{{ equipoSeleccionado?.numeroSerie }}</td>
+      <td class="table-column left">{{ equipoSeleccionado?.numeroPatrimonial }}</td>
+      <td class="table-column left">{{ equipoSeleccionado?.tipoEquipo?.tipo }}</td>
+      <td class="table-column">{{ equipoSeleccionado?.marca?.marca }}</td>
+      <td class="table-column">{{ equipoSeleccionado?.modelo?.modelo }}</td>
+      <td class="table-column">{{ equipoSeleccionado?.descripcionEquipo }}</td>
       <td
-        class="table-column">{{ equipo?.ubicacion?.bloque ? equipo?.ubicacion?.bloque + ' ' : '' }}
-        {{ equipo?.ubicacion?.nivel ? equipo?.ubicacion?.nivel + ' ' : '' }}
-        {{ equipo?.ubicacion?.numeroSala ? equipo?.ubicacion?.numeroSala + ' ' : '' }}
+        class="table-column">{{ equipoSeleccionado?.ubicacion?.bloque ? equipoSeleccionado?.ubicacion?.bloque + ' ' : '' }}
+        {{ equipoSeleccionado?.ubicacion?.nivel ? equipoSeleccionado?.ubicacion?.nivel + ' ' : '' }}
+        {{ equipoSeleccionado?.ubicacion?.numeroSala ? equipoSeleccionado?.ubicacion?.numeroSala + ' ' : '' }}
       </td>
-      <td class="table-column">{{ equipo?.representante.nombre }}</td>
-      <td class="table-column">{{ equipo?.fechaVenGarantia }}</td>
+      <td class="table-column">{{ equipoSeleccionado?.representante.nombre }}</td>
+      <td class="table-column">{{ equipoSeleccionado?.fechaVenGarantia }}</td>
       <!--      <td class=" table-columnleft">{{equipo?.contrato.numeroContrato}}</td>-->
     </tr>
     </tbody>
@@ -151,9 +151,9 @@
         <td class="table-column" style="text-align: center">{{ detalle.cantidadSolicitada }}</td>
         <td>
           <button type="button" pButton pRipple icon="pi pi-pencil" class="p-button-success"
-                  (click)="editarRepuesto(detalle)"></button>
+                  (click)="editRepuesto(detalle)"></button>
           <button type="button" pButton pRipple icon="pi pi-trash" class="p-button-danger"
-                  (click)="eliminarDetalleRepuesto(detalle)"></button>
+                  (click)="eliminarDetalleRepuesto(detalle,true)"></button>
         </td>
       </tr>
     </ng-template>

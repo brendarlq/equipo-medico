@@ -144,7 +144,7 @@
       </select>
     </clr-select-container>
 
-    <clr-input-container *ngIf="tipoServicio == 'PREVENTIVO'">
+    <clr-input-container>
       <label>Fecha:</label>
       <input clrInput type="date" [(ngModel)]="fechaRealizacion" name="fechaInstalacion"
              min="1990-01-01" max="2050-12-31"/>
