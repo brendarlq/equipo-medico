@@ -44,8 +44,7 @@ public class ContratoServiceImpl implements ContratoService {
         Date current = Date.from((LocalDate.now().minusDays(1)).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 
         if(Objects.nonNull(contrato.getFechaFin()) &&
-            contrato.getFechaFin()
-            .after(current)){
+            current.after(contrato.getFechaFin())){
             contrato.setEstadoContrato("Finalizado");
         }
         Contrato cont = contratoRepository.save(contrato);
