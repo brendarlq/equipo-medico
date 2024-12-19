@@ -7,6 +7,8 @@ import {Router} from '@angular/router';
 import {DatePipe} from "@angular/common";
 import {Repuesto} from "../../../domain/repuesto";
 import {RepuestoService} from "../../../service/repuesto.service";
+import {Representante} from "../../../domain/representante";
+import {RepresentanteService} from "../../../service/representante.service";
 
 @Component({
   selector: 'app-add-contrato',
@@ -24,7 +26,6 @@ export class AddContratoComponent implements OnInit {
   tipoProcedimiento: string;
   numeroProcedimiento: string;
   estadoContrato: string;
-  convocante: string;
   fechaInicio: any;
   fechaFin: any;
 
@@ -49,6 +50,13 @@ export class AddContratoComponent implements OnInit {
   repuestoId: any;
   isSelectedRepuesto: boolean;
 
+  // modal para agregar/editar representante
+  modalAddEditRepreOpen = false;
+  repreId: any;
+  repreSeleccionado: Representante;
+  isEditRepre: boolean;
+  representantes = new Array<Representante>();
+
   // error
   errorMessage: string;
   error: boolean;
@@ -57,7 +65,8 @@ export class AddContratoComponent implements OnInit {
   constructor(private router: Router,
               private contratoService: ContratoService,
               private equipoService: EquipoService,
-              private repuestoService: RepuestoService) {
+              private repuestoService: RepuestoService,
+              private representanteService: RepresentanteService) {
   }
 
   ngOnInit() {
@@ -68,10 +77,72 @@ export class AddContratoComponent implements OnInit {
     this.isTipoMantenimiento = false;
     this.equipoId = 'Seleccionar Equipo';
     this.repuestoId = 'Seleccionar Repuesto';
+    this.repreId = 'Agregar Representante';
+    this.getAllRepresentantes(null);
     this.getEquipos();
     this.getAllRepuestos();
     this.getEstadoContratos();
     this.getTiposContratos();
+  }
+
+  /**
+   * Se obtiene la lista de representantes.
+   */
+  getAllRepresentantes(repre: Representante): void {
+    this.representanteService.getAllRepresentantes().subscribe(
+      representantes => {
+        this.representantes = representantes;
+        if (repre != null) {
+          this.repreId = repre.id;
+          this.repreSeleccionado = repre;
+        }
+      },
+      error => {
+        this.errorMessage = error.error;
+        console.log(this.errorMessage);
+        this.error = true;
+      }
+    );
+  }
+
+  /**
+   * Cuando se quiere crear un nuevo representante.
+   */
+  addNewRepresentante(): void {
+    this.repreSeleccionado = null;
+    this.modalAddEditRepreOpen = true;
+  }
+
+  /**
+   * Cuando se selecciona un representante para editar sus datos.
+   */
+  editRepresentante() {
+    this.isEditRepre = true;
+    this.modalAddEditRepreOpen = true;
+  }
+
+  /**
+   * Cuando el control es devuelto a la pantalla principal.
+   */
+  closeRepresentanteModal(value: Representante) {
+    this.getAllRepresentantes(value);
+    this.modalAddEditRepreOpen = false;
+  }
+
+  /**
+   * Al seleccionar un representante de la lista
+   */
+  onSelectRepresentante() {
+    this.representanteService.getRepresentanteById(this.repreId).subscribe(
+      representante => {
+        this.repreSeleccionado = representante;
+      },
+      error => {
+        this.errorMessage = error.error;
+        console.log(this.errorMessage);
+        this.error = true;
+      }
+    );
   }
 
 
@@ -324,7 +395,7 @@ export class AddContratoComponent implements OnInit {
     }
 
     this.contrato = new Contrato(this.contratoId, this.numeroContrato, this.nombreLicitacion,
-      this.tipoContrato, this.tipoProcedimiento, this.numeroProcedimiento, this.estadoContrato, this.convocante,
+      this.tipoContrato, this.tipoProcedimiento, this.numeroProcedimiento, this.estadoContrato, this.repreSeleccionado,
       this.selectedEquipos, this.selectedRepuestos, this.fechaInicio, this.fechaFin);
     this.saveContrato(this.contrato);
 

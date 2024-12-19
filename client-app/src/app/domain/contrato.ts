@@ -1,5 +1,6 @@
 import {Equipo} from './equipo';
 import {Repuesto} from "./repuesto";
+import {Representante} from "./representante";
 
 export class Contrato {
 
@@ -10,7 +11,7 @@ export class Contrato {
               public tipoProcedimiento: string,
               public numeroProcedimiento: string,
               public estadoContrato: string,
-              public convocante: string,
+              public representante: Representante,
               public equipos: Equipo[],
               public repuestos: Repuesto[],
               public fechaInicio?: any,

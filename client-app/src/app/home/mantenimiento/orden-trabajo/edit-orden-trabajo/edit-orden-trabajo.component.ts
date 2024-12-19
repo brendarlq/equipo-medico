@@ -102,8 +102,8 @@ export class EditOrdenTrabajoComponent implements OnInit {
     this.tipoServicio = orden.tipoServicio;
     this.diagnostico = orden.diagnostico;
     this.responsable = orden.responsable;
-    if (orden.solicitudRepuesto != null) {
-      this.fechaRealizacion = datepipe.transform(orden.fechaSolicitud, 'MM/dd/yyyy');
+    if (orden.fechaSolicitud != null) {
+      this.fechaRealizacion = datepipe.transform(orden.fechaSolicitud, 'yyyy-MM-dd');
     }
     this.equipoSeleccionado = orden.equipo;
     this.equipoSeleccionado.fechaVenGarantia = datepipe.transform(this.equipoSeleccionado.fechaVenGarantia, 'dd-MM-yyyy');
@@ -213,8 +213,14 @@ export class EditOrdenTrabajoComponent implements OnInit {
    */
   onSaveAddOrdenTrabajo() {
     if (this.fechaRealizacion != null && (typeof this.fechaRealizacion === 'string' || this.fechaRealizacion instanceof String)) {
-      let parts = this.fechaRealizacion.split('/');
-      this.fechaRealizacion = new Date(+parts[2], +parts[0] - 1, +parts[1]);
+      let parts = this.fechaRealizacion.split('-');
+      this.fechaRealizacion = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+    }
+
+    if (this.equipoSeleccionado.fechaVenGarantia != null && (typeof this.equipoSeleccionado.fechaVenGarantia === 'string'
+      || this.equipoSeleccionado.fechaVenGarantia instanceof String)) {
+      let parts = this.equipoSeleccionado.fechaVenGarantia.split('-');
+      this.equipoSeleccionado.fechaVenGarantia = new Date(+parts[0], +parts[1] - 1, +parts[2]);
     }
 
     this.ordenTrabajo = new OrdenTrabajo(this.id, this.estadoOT, this.tipoServicio, this.diagnostico, this.responsable,

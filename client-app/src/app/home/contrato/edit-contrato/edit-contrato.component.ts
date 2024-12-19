@@ -8,6 +8,8 @@ import {switchMap} from 'rxjs/operators';
 import {DatePipe} from '@angular/common';
 import {Repuesto} from "../../../domain/repuesto";
 import {RepuestoService} from "../../../service/repuesto.service";
+import {Representante} from "../../../domain/representante";
+import {RepresentanteService} from "../../../service/representante.service";
 
 
 @Component({
@@ -26,7 +28,6 @@ export class EditContratoComponent implements OnInit {
   tipoProcedimiento: string;
   numeroProcedimiento: string;
   estadoContrato: string;
-  convocante: string;
   fechaInicio: any;
   fechaFin: any;
 
@@ -51,6 +52,13 @@ export class EditContratoComponent implements OnInit {
   repuestoId: any;
   isSelectedRepuesto: boolean;
 
+  // modal para agregar/editar representante
+  modalAddEditRepreOpen = false;
+  repreId: any;
+  repreSeleccionado: Representante;
+  isEditRepre: boolean;
+  representantes = new Array<Representante>();
+
 
   // error
   errorMessage: string;
@@ -60,7 +68,8 @@ export class EditContratoComponent implements OnInit {
               private router: Router,
               private contratoService: ContratoService,
               private equipoService: EquipoService,
-              private repuestoService: RepuestoService) {
+              private repuestoService: RepuestoService,
+              private representanteService: RepresentanteService) {
   }
 
   ngOnInit() {
@@ -72,14 +81,15 @@ export class EditContratoComponent implements OnInit {
     this.getEstadoContratos();
     this.getTiposContratos();
     this.getAllRepuestos();
+    this.getAllRepresentantes(null);
 
     this.route.paramMap
       .pipe(
         switchMap((params: ParamMap) => this.contratoService.getContratoById(+params.get('id')))
       ).subscribe(contrato => {
         this.contrato = new Contrato(contrato.id, contrato.numeroContrato, contrato.nombreLicitacion,
-          contrato.tipoContrato, contrato.tipoProcedimiento, contrato.numeroProcedimiento, contrato.estadoContrato, contrato.convocante,
-          contrato.equipos, contrato.repuestos, contrato.fechaInicio, contrato.fechaFin);
+          contrato.tipoContrato, contrato.tipoProcedimiento, contrato.numeroProcedimiento, contrato.estadoContrato,
+          contrato.representante, contrato.equipos, contrato.repuestos, contrato.fechaInicio, contrato.fechaFin);
         this.camposAEditar(this.contrato);
       },
       error => {
@@ -87,6 +97,66 @@ export class EditContratoComponent implements OnInit {
         console.log(this.errorMessage);
         this.error = true;
       });
+  }
+
+  /**
+   * Se obtiene la lista de representantes.
+   */
+  getAllRepresentantes(repre: Representante): void {
+    this.representanteService.getAllRepresentantes().subscribe(
+      representantes => {
+        this.representantes = representantes;
+        if (repre != null) {
+          this.repreId = repre.id;
+          this.repreSeleccionado = repre;
+        }
+      },
+      error => {
+        this.errorMessage = error.error;
+        console.log(this.errorMessage);
+        this.error = true;
+      }
+    );
+  }
+
+  /**
+   * Cuando se quiere crear un nuevo representante.
+   */
+  addNewRepresentante(): void {
+    this.repreSeleccionado = null;
+    this.modalAddEditRepreOpen = true;
+  }
+
+  /**
+   * Cuando se selecciona un representante para editar sus datos.
+   */
+  editRepresentante() {
+    this.isEditRepre = true;
+    this.modalAddEditRepreOpen = true;
+  }
+
+  /**
+   * Cuando el control es devuelto a la pantalla principal.
+   */
+  closeRepresentanteModal(value: Representante) {
+    this.getAllRepresentantes(value);
+    this.modalAddEditRepreOpen = false;
+  }
+
+  /**
+   * Al seleccionar un representante de la lista
+   */
+  onSelectRepresentante() {
+    this.representanteService.getRepresentanteById(this.repreId).subscribe(
+      representante => {
+        this.repreSeleccionado = representante;
+      },
+      error => {
+        this.errorMessage = error.error;
+        console.log(this.errorMessage);
+        this.error = true;
+      }
+    );
   }
 
   /**
@@ -171,7 +241,7 @@ export class EditContratoComponent implements OnInit {
     this.tipoProcedimiento = contrato.tipoProcedimiento;
     this.numeroProcedimiento = contrato.numeroProcedimiento;
     this.estadoContrato = contrato.estadoContrato;
-    this.convocante = contrato.convocante;
+    this.repreSeleccionado = contrato.representante;
     this.fechaInicio = datepipe.transform(contrato.fechaInicio, 'yyyy-MM-dd');
     this.fechaFin = datepipe.transform(contrato.fechaFin, 'yyyy-MM-dd');
     this.selectedEquipos = contrato.equipos;
@@ -369,7 +439,7 @@ export class EditContratoComponent implements OnInit {
     }
 
     this.contrato = new Contrato(this.contratoId, this.numeroContrato, this.nombreLicitacion, this.tipoProcedimiento,
-      this.tipoContrato, this.numeroProcedimiento, this.estadoContrato, this.convocante, this.selectedEquipos,
+      this.tipoContrato, this.numeroProcedimiento, this.estadoContrato, this.repreSeleccionado, this.selectedEquipos,
       this.selectedRepuestos, this.fechaInicio, this.fechaFin);
     this.saveContrato(this.contrato);
 

@@ -75,17 +75,6 @@
       </div>
     </div>
 
-<!--    estado del equipo-->
-    <div class="clr-col-3"  *ngIf="selectedEquipo">
-    <clr-select-container>
-      <label>Estado</label>
-      <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
-        <option value="Operativo">Operativo</option>
-        <option value="Inoperativo">Inoperativo</option>
-        <option value="Irreparable">Irreparable</option>
-      </select>
-    </clr-select-container>
-    </div>
     <!--    botón eliminar-->
     <div class="clr-col-1 clr-align-self-end" *ngIf="selectedEquipo">
       <a type="button" class="btn btn-sm btn-danger-outline"
@@ -104,7 +93,7 @@
       <th class=" table-header">Descripción</th>
       <th class=" table-header">Ubicación</th>
       <th class=" table-header">Representante</th>
-      <th class=" table-header">Fecha Garantia</th>
+      <th class=" table-header">Fecha de Vto. de Garantía</th>
 <!--      <th class=" table-header left">Contrato</th>-->
     </tr>
     </thead>
@@ -145,8 +134,8 @@
     </clr-select-container>
 
     <clr-input-container>
-      <label>Fecha:</label>
-      <input clrInput type="date" [(ngModel)]="fechaRealizacion" name="fechaInstalacion"
+      <label>Fecha a realizarse el trabajo:</label>
+      <input clrInput type="date" [(ngModel)]="fechaRealizacion" name="fechaRealizacion"
              min="1990-01-01" max="2050-12-31"/>
     </clr-input-container>
     <br/>
@@ -161,6 +150,17 @@
       <label class="clr-col-8">Descripción del Problema:</label>
       <textarea class="tamanho-total clr-col-6" clrTextarea [(ngModel)]="diagnostico" name="diagnostico"></textarea>
     </clr-textarea-container>
+  </div>
+  <!--    estado del equipo-->
+  <div class="clr-col-3"  *ngIf="selectedEquipo">
+    <clr-select-container>
+      <label>Estado</label>
+      <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
+        <option value="Operativo">Operativo</option>
+        <option value="Inoperativo">Inoperativo</option>
+        <option value="Irreparable">Irreparable</option>
+      </select>
+    </clr-select-container>
   </div>
   <br/><br/>
   <div class="clr-row clr-justify-content-start">

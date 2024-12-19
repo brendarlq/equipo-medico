@@ -179,8 +179,8 @@ export class AddOrdenTrabajoComponent implements OnInit {
   onSaveAddOrdenTrabajo() {
     if(this.selectedEquipo) {
       if (this.fechaRealizacion != null && (typeof this.fechaRealizacion === 'string' || this.fechaRealizacion instanceof String)) {
-        let parts = this.fechaRealizacion.split('/');
-        this.fechaRealizacion = new Date(+parts[2], +parts[1] - 1, +parts[0]);
+        let parts = this.fechaRealizacion.split('-');
+        this.fechaRealizacion = new Date(+parts[0], +parts[1] - 1, +parts[2]);
       }
 
       this.ordenTrabajo = new OrdenTrabajo(null, this.estadoOT, this.tipoServicio, this.diagnostico, this.responsable,

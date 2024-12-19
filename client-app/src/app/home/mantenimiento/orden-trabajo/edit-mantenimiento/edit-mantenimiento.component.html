@@ -187,11 +187,11 @@
         <th class="table-header">Fecha Servicio</th>
         <th class="table-header">Nro Orden Servicio</th>
         <th class="table-header">Informe Numero</th>
-        <th class="table-header">Nombre del Técnico</th>
-        <th class="table-header">Tipo Servicio</th>
+        <th class="table-header">Tipo de mantenimiento</th>
         <th class="table-header">Tarea Realizada</th>
+        <th class="table-header">Nombre del Técnico</th>
         <th class="table-header">Estado del Equipo</th>
-        <th style="width:6rem"></th>
+<!--        <th style="width:6rem"></th>-->
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-servicio>
@@ -199,14 +199,14 @@
         <td class="table-column" style="text-align: center">{{servicio?.fechaMantenimiento}}</td>
         <td class="table-column">{{servicio?.numeroOrdenServicio}}</td>
         <td class="table-column">{{servicio?.informeNumero}}</td>
-        <td class="table-column">{{servicio?.nombreTecnico}}</td>
         <td class="table-column">{{servicio?.tipoServicio}}</td>
         <td class="table-column" style="text-align: right">{{servicio?.tareaRealizada}}</td>
+        <td class="table-column">{{servicio?.nombreTecnico}}</td>
         <td class="table-column" style="text-align: center">{{servicio.estadoEquipo}}</td>
-        <td>
-          <button type="button" pButton pRipple icon="pi pi-trash" class="p-button-danger"
-                  (click)="eliminarDetalleServicio(servicio)"></button>
-        </td>
+<!--        <td>-->
+<!--          <button type="button" pButton pRipple icon="pi pi-trash" class="p-button-danger"-->
+<!--                  (click)="eliminarDetalleServicio(servicio)"></button>-->
+<!--        </td>-->
       </tr>
     </ng-template>
   </p-table>
@@ -240,15 +240,6 @@
       </clr-textarea-container>
     </div>
     <br><br>
-    <div class="clr-col-5">
-      <div class="btn-group">
-        <button type="button" class="btn btn-sm btn-secondary"
-                (click)="agregarServiciosDetalles()">
-          <clr-icon shape="plus"></clr-icon>
-          Agregar Servicios Realizdos
-        </button>
-      </div>
-    </div>
   </div>
 
   <br/><br/>

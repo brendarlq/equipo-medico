@@ -36,7 +36,7 @@
   <div class="clr-col-8 content-no-print">
     <div class="clr-row">
       <!--    numero de serie-->
-      <div class="clr-col-3">
+      <div class="clr-col-4">
         <div class="clr-form-control">
           <label class="tamanho-total clr-col-5 label-input">N. Serie:</label>
           <div class="clr-control-container">
@@ -117,7 +117,7 @@
             {{equipoSeleccionado?.ubicacion?.numeroSala}} {{equipoSeleccionado?.ubicacion?.nivel}}</td>
         </tr>
         <tr>
-          <th class="column-width">Instalacion:</th>
+          <th class="column-width">Puesta en Marcha:</th>
           <td>{{fechaInstalacion}}</td>
         </tr>
         <tr>
@@ -140,12 +140,12 @@
           <td>{{equipoSeleccionado?.descripcionEquipo}}</td>
         </tr>
         <tr>
-          <th class="column-width">Costo:</th>
+          <th class="column-width">Costo del Equipo:</th>
           <td>{{equipoSeleccionado?.costo}}</td>
         </tr>
         <tr>
-          <th class="column-width">Fecha de Compra:</th>
-          <td>{{fechaCompra}}</td>
+          <th class="column-width">Versión del Software:</th>
+          <td>{{equipoSeleccionado?.versionSw}}</td>
         </tr>
         </tbody>
       </table>
@@ -154,11 +154,11 @@
       <table class="table table-vertical">
         <tbody>
         <tr>
-          <th class="column-width">Fabricación:</th>
+          <th class="column-width">Año Fabricación:</th>
           <td>{{fechaFabricacion}}</td>
         </tr>
         <tr>
-          <th class="column-width">Garantia:</th>
+          <th class="column-width">Vto. de garantía:</th>
           <td>{{fechaVenGarantia}}</td>
         </tr>
         </tbody>

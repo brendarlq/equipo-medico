@@ -70,10 +70,11 @@
         <tr>
           <th class="table-header">ID</th>
           <th class="table-header">Fecha a realizarse el trabajo</th>
-          <th class="table-header">Estado</th>
+          <th class="table-header">Estado de la orden</th>
           <th class="table-header">Tipo de Mantenimiento</th>
           <th class="table-header">Diagnostico</th>
           <th class="table-header">Equipo</th>
+          <th class="table-header">Estado del Equipo</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-ordenTrabajo>
@@ -83,7 +84,8 @@
           <td class="table-column text-center">{{ordenTrabajo.estado}}</td>
           <td class="table-column text-left">{{ordenTrabajo.tipoServicio}}</td>
           <td class="table-column text-left">{{ordenTrabajo.diagnostico}}</td>
-          <td class="table-column text-center">{{ordenTrabajo.equipo?.numeroSerie}}  {{ordenTrabajo.equipo?.descripcionEquipo}}</td>
+          <td class="table-column text-center">{{ordenTrabajo.equipo?.numeroSerie}}  {{ordenTrabajo.equipo?.marca?.marca}} {{ordenTrabajo.equipo?.modelo?.modelo}}</td>
+          <td class="table-column text-center">{{ordenTrabajo.equipo?.estado}}</td>
         </tr>
       </ng-template>
     </p-table>

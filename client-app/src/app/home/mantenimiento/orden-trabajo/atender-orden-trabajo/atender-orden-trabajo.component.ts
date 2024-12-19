@@ -60,6 +60,7 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
   fechaMantenimiento: any;
   servicioRealizado: Mantenimiento;
   servicioRealizadoList = new Array<Mantenimiento>();
+  servicioRealizadoAEliminar = new Array<Mantenimiento>();
 
   // Errors
   error: boolean;
@@ -263,17 +264,6 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
   }
 
   /**
-   * Cuando se presiona el botón para crear un nuevo detalle repuesto.
-   */
-  agregarServiciosDetalles(): void {
-    if (this.informeNro != undefined && this.tareaRealizada != '' && this.nombreTecnico != '') {
-      this.servicioRealizado = new Mantenimiento(null, this.numeroOrdenServicio, this.tareaRealizada, this.informeNro, this.nombreTecnico,
-        this.ordenTrabajo.tipoServicio, this.equipoSeleccionado.estado, this.ordenTrabajo, this.fechaMantenimiento);
-      this.saveMantenimiento(this.servicioRealizado);
-    }
-  }
-
-  /**
    * Se limpian los campos del servicio agregado.
    */
   clearDatosServicios() {
@@ -285,22 +275,15 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
 
 
   /**
-   * Se quita de la lista de detalles el servicio agregado
-   */
-  eliminarDetalleServicio(servicioRealizado: Mantenimiento): void {
-    for (let i = 0; i < this.servicioRealizadoList.length; i++) {
-      if (servicioRealizado.id === this.servicioRealizadoList[i].id) {
-        this.servicioRealizadoList.splice(i, 1);
-        break;
-      }
-    }
-  }
-
-
-  /**
    * Cuando se guarda la información introducida.
    */
   onSaveMantenimiento() {
+
+    if (this.equipoSeleccionado.fechaVenGarantia != null && (typeof this.equipoSeleccionado.fechaVenGarantia === 'string' || this.equipoSeleccionado.fechaVenGarantia instanceof String)) {
+      let parts = this.fechaRealizacion.split('-');
+      this.equipoSeleccionado.fechaVenGarantia = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+    }
+
     if(this.estadoOT == EstadoOrdenTrabajo.CANCELADO) {
       if (this.solicitudRepuesto == null && this.solicitudRepuesto.estado == EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO) {
         this.solicitudRepuesto.estado = EstadoSolicitudRepuesto.PENDIENTE;
@@ -308,51 +291,46 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
       }
       this.ordenTrabajo.solicitudRepuesto = null;
       this.ordenTrabajo.equipo = null;
-      this.ordenTrabajo.estado = this.estadoOT;
       this.updateOrdenTrabajo(this.ordenTrabajo);
+
     } else {
+      this.verificarRepuestos();
 
-      if (this.solicitudRepuestoDetalles != null && this.solicitudRepuestoDetalles.length > 0) {
-        // Si la solicitud de repuesto se crea a partir de la orden de trabajo atendida
-        if (this.solicitudRepuesto == null) {
-          this.esNuevaSolicitudRepuesto = true;
-          this.solicitudRepuesto = new SolicitudRepuesto(null, EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO,
-            this.solicitudRepuestoDetalles, new Date());
-        } else {
-          // si se obtuvo una solicitud de repuesto buscando por su Id
-          this.solicitudRepuesto.estado = EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO;
-          this.solicitudRepuesto.solicitudRepuestoDetalles = this.solicitudRepuestoDetalles;
-        }
+      if (this.informeNro!= undefined && this.tareaRealizada != '' && this.nombreTecnico != '') {
+        this.servicioRealizado = new Mantenimiento(null, this.numeroOrdenServicio, this.tareaRealizada, this.informeNro, this.nombreTecnico,
+          this.ordenTrabajo.tipoServicio, this.equipoSeleccionado.estado, this.ordenTrabajo, this.fechaMantenimiento);
+        this.saveMantenimiento(this.servicioRealizado);
+      }
+    }
+  }
+
+  verificarRepuestos(){
+    if (this.solicitudRepuestoDetalles != null && this.solicitudRepuestoDetalles.length > 0) {
+      // Si la solicitud de repuesto se crea a partir de la orden de trabajo atendida
+      if (this.solicitudRepuesto == null) {
+        this.esNuevaSolicitudRepuesto = true;
+        this.solicitudRepuesto = new SolicitudRepuesto(null, EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO,
+          this.solicitudRepuestoDetalles, new Date());
       } else {
-        if (this.solicitudRepuesto != null) {
-          this.solicitudRepuesto = null;
-        }
+        // si se obtuvo una solicitud de repuesto buscando por su Id
+        this.solicitudRepuesto.estado = EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO;
+        this.solicitudRepuesto.solicitudRepuestoDetalles = this.solicitudRepuestoDetalles;
       }
-
-      // si hay elementos que eliminar de la solicitud de repuestos, se procede a eliminarlos y luego actualizar la solicitud.
-      if (this.detallesAEliminar != null && this.detallesAEliminar.length > 0) {
-        this.eliminarDetallesdelaSolicitudRepuesto();
+    } else {
+      if (this.solicitudRepuesto != null) {
+        this.solicitudRepuesto = null;
       }
+    }
 
-      if (this.servicioRealizadoList != null){
-        for (let i = 0; i < this.servicioRealizadoList.length; i++) {
-          let parts = this.servicioRealizadoList[i].fechaMantenimiento.split('-');
-          this.servicioRealizadoList[i].fechaMantenimiento = new Date(+parts[2], +parts[1] - 1, +parts[0]);
-        }
-      }
+    // si hay elementos que eliminar de la solicitud de repuestos, se procede a eliminarlos y luego actualizar la solicitud.
+    if (this.detallesAEliminar != null && this.detallesAEliminar.length > 0) {
+      this.eliminarDetallesdelaSolicitudRepuesto();
+    }
 
-      this.ordenTrabajo.mantenimientos = this.servicioRealizadoList;
-      this.ordenTrabajo.estado = this.estadoOT;
-
-      if (this.esNuevaSolicitudRepuesto) {
-        this.saveSolicitudRepuesto(this.solicitudRepuesto);
-      } else if (this.fueSolicitudRepuestoActualizada) {
-        this.updateSolicitudRepuesto(this.solicitudRepuesto, false);
-      }else {
-        this.updateOrdenTrabajo(this.ordenTrabajo);
-        //this.goBack();
-      }
-      this.manteniminetoService.emitExisteOrdenTrabajoAtendida(true);
+    if (this.esNuevaSolicitudRepuesto) {
+      this.saveSolicitudRepuesto(this.solicitudRepuesto);
+    } else if (this.fueSolicitudRepuestoActualizada) {
+      this.updateSolicitudRepuesto(this.solicitudRepuesto, false);
     }
   }
 
@@ -384,7 +362,6 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
       // tslint:disable-next-line:no-shadowed-variable
       solicitud => {
         this.solicitudRepuesto = solicitud;
-        this.solicitudRepuestoService.emitExisteSolicitudRepuesto(true);
         this.ordenTrabajo.solicitudRepuesto = this.solicitudRepuesto;
         this.updateOrdenTrabajo(this.ordenTrabajo);
       },
@@ -428,8 +405,9 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
       mantenimineto => {
         this.servicioRealizado = mantenimineto;
         this.servicioRealizadoList.push(this.servicioRealizado);
-        this.formateoFechas();
-        this.clearDatosServicios();
+        this.manteniminetoService.emitExisteOrdenTrabajoAtendida(true);
+        this.ordenTrabajo.mantenimientos = this.servicioRealizadoList;
+        this.updateOrdenTrabajo(this.ordenTrabajo);
       },
       error => {
         this.errorMessage = error.error;
@@ -446,13 +424,13 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
     }
   }
 
-
   /**
    * Se actualizan los datos de la orden de trabajo
    * @param ordenTrabajo
    */
   updateOrdenTrabajo(ordenTrabajo: OrdenTrabajo) {
 
+    this.ordenTrabajo.estado = this.estadoOT;
     this.ordenTrabajoService.editarOrdenTrabajo(ordenTrabajo).subscribe(
       orden => {
         this.ordenTrabajo = orden;

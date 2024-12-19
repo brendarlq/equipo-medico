@@ -12,7 +12,6 @@ export class OrdenTrabajo {
               public equipo: Equipo,
               public solicitudRepuesto: SolicitudRepuesto,
               public mantenimientos: Mantenimiento[],
-              // este campo es para el tipo preventivo
               public fechaSolicitud: any) {
 
   }

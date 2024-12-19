@@ -45,10 +45,34 @@
         <clr-control-error>El campo es obligatorio</clr-control-error>
       </clr-input-container>
 
-      <clr-input-container>
-        <label>Convocante:</label>
-        <input class="tamanho-total clr-col-6" clrInput type="text" [(ngModel)]="convocante" name="convocante"/>
-      </clr-input-container>
+      <div class="clr-row clr-justify-content-start">
+        <label class="clr-col-1 clr-align-self-end">Representante:</label>
+        <div class="clr-col-4">
+          <select clrSelect name="repreId" [(ngModel)]="repreId"
+                  (ngModelChange)="onSelectRepresentante()" required>
+            <option>Agregar Representante</option>
+            <option *ngFor="let repre of representantes"
+                    value={{repre.id}}>{{repre.nombre}}
+            </option>
+          </select>
+        </div>
+
+        <div class="clr-col-1 clr-align-self-end" *ngIf="repreId == 'Agregar Representante'">
+          <a class=" btn btn-sm btn-success"
+             (click)="addNewRepresentante()">
+            <clr-icon shape="plus"></clr-icon>
+            Add
+          </a>
+        </div>
+
+        <div class="clr-col-1 clr-align-self-end" *ngIf="repreId != 'Agregar Representante'">
+          <a class=" btn btn-sm btn-success"
+             (click)="editRepresentante()">
+            <clr-icon shape="pencil"></clr-icon>
+            Edit
+          </a>
+        </div>
+      </div>
 
       <clr-textarea-container>
         <label>Nombre Licitación:</label>
@@ -230,3 +254,12 @@
     </button>
   </div>
 </form>
+
+
+<!--Modal para agregar o editar los datos de un representante-->
+<app-representante *ngIf="modalAddEditRepreOpen"
+                   [representante]="repreSeleccionado"
+                   [isEditRepre]="isEditRepre"
+                   (representanteToUpdate)="closeRepresentanteModal($event)"
+                   (cancelAddEditRepre)="closeRepresentanteModal($event)">
+</app-representante>
