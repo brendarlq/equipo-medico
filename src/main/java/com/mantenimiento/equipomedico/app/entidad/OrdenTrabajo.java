@@ -2,11 +2,13 @@ package com.mantenimiento.equipomedico.app.entidad;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * Orden de trabajo para el equipo.
@@ -44,7 +46,7 @@ public class OrdenTrabajo implements Serializable {
     private SolicitudRepuesto solicitudRepuesto;
 
     @OneToMany(mappedBy="ordenTrabajo")
-//    @JsonIgnoreProperties(value="ordenTrabajo", allowSetters = true)
+    @JsonManagedReference
     private List<Mantenimiento> mantenimientos;
 
     // Para el tipo de servicio PREVENTIVO

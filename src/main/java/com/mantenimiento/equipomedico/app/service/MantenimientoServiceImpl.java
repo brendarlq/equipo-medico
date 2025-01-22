@@ -2,6 +2,8 @@ package com.mantenimiento.equipomedico.app.service;
 
 import com.mantenimiento.equipomedico.app.entidad.Mantenimiento;
 import com.mantenimiento.equipomedico.app.entidad.OrdenTrabajo;
+import com.mantenimiento.equipomedico.app.entidad.SolicitudRepuesto;
+import com.mantenimiento.equipomedico.app.entidad.SolicitudRepuestoDetalles;
 import com.mantenimiento.equipomedico.app.repository.MantenimientoRepository;
 import com.mantenimiento.equipomedico.app.repository.OrdenTrabajoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,5 +75,14 @@ public class MantenimientoServiceImpl implements MantenimientoService {
     public List<Mantenimiento> getAllByEquipoId(Long id)
     {
         return mantenimientoRepository.getAllByEquipoId(id);
+    }
+
+    @Override
+    public void removeById(long id)
+    {
+        Optional<Mantenimiento> mantenimiento = mantenimientoRepository.findById(id);
+        if(mantenimiento.isPresent()){
+            mantenimientoRepository.deleteById(id);
+        }
     }
 }

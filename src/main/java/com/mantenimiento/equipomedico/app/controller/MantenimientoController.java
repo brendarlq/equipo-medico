@@ -3,11 +3,13 @@ package com.mantenimiento.equipomedico.app.controller;
 import com.mantenimiento.equipomedico.app.entidad.Mantenimiento;
 import com.mantenimiento.equipomedico.app.entidad.OrdenTrabajo;
 import com.mantenimiento.equipomedico.app.entidad.Repuesto;
+import com.mantenimiento.equipomedico.app.entidad.SolicitudRepuestoDetalles;
 import com.mantenimiento.equipomedico.app.service.MantenimientoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -95,5 +97,18 @@ public class MantenimientoController {
     @RequestMapping(value = "by-equipo", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Mantenimiento> getAllByEquipoId(@RequestParam Long id) {
         return mantenimientoService.getAllByEquipoId(id);
+    }
+
+    /**
+     * Elimina un detalle de solicitud de repuesto.
+     *
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Mantenimiento> removeMantenimientoById(@PathVariable("id") Long id)
+    {
+        mantenimientoService.removeById(id);
+        return ResponseEntity.noContent().build();
     }
 }

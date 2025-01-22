@@ -35,17 +35,7 @@
   <hr>
   <!-- información del equipo-->
   <h4 class="form-mantenimiento-sub-title">Información del Equipo</h4>
-  <!--    estado del equipo-->
-  <div class="clr-col-8">
-    <clr-select-container>
-      <label>Estado del Equipo</label>
-      <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
-        <option value="Operativo">Operativo</option>
-        <option value="Inoperativo">Inoperativo</option>
-        <option value="Irreparable">Irreparable</option>
-      </select>
-    </clr-select-container>
-  </div>
+
   <table class="table table-compact">
     <thead>
     <tr>
@@ -57,7 +47,7 @@
       <th class=" table-header">Descripción</th>
       <th class=" table-header">Ubicación</th>
       <th class=" table-header">Representante</th>
-      <th class=" table-header">Fecha Garantia</th>
+      <th class=" table-header">Fecha de Vto. de Garantía</th>
 <!--      <th class=" table-header left">Contrato</th>-->
     </tr>
     </thead>
@@ -190,7 +180,7 @@
         <th class="table-header">Tipo de mantenimiento</th>
         <th class="table-header">Tarea Realizada</th>
         <th class="table-header">Nombre del Técnico</th>
-        <th class="table-header">Estado del Equipo</th>
+<!--        <th class="table-header">Estado del Equipo</th>-->
 <!--        <th style="width:6rem"></th>-->
       </tr>
     </ng-template>
@@ -202,7 +192,7 @@
         <td class="table-column">{{servicio?.tipoServicio}}</td>
         <td class="table-column" style="text-align: right">{{servicio?.tareaRealizada}}</td>
         <td class="table-column">{{servicio?.nombreTecnico}}</td>
-        <td class="table-column" style="text-align: center">{{servicio.estadoEquipo}}</td>
+<!--        <td class="table-column" style="text-align: center">{{servicio.estadoEquipo}}</td>-->
 <!--        <td>-->
 <!--          <button type="button" pButton pRipple icon="pi pi-trash" class="p-button-danger"-->
 <!--                  (click)="eliminarDetalleServicio(servicio)"></button>-->
@@ -238,6 +228,17 @@
         <textarea class="tamanho-total clr-col-6" clrTextarea [(ngModel)]="tareaRealizada" name="tareaRealizada">
       </textarea>
       </clr-textarea-container>
+    </div>
+    <!--    estado del equipo-->
+    <div class="clr-col-8">
+      <clr-select-container>
+        <label>Estado del Equipo</label>
+        <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
+          <option value="Operativo">Operativo</option>
+          <option value="Inoperativo">Inoperativo</option>
+          <option value="Irreparable">Irreparable</option>
+        </select>
+      </clr-select-container>
     </div>
     <br><br>
   </div>

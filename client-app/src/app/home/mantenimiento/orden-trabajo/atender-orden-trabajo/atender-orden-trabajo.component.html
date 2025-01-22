@@ -36,17 +36,7 @@
   <hr>
   <!-- información del equipo-->
   <h4 class="form-mantenimiento-sub-title">Información del Equipo</h4>
-  <!--    estado del equipo-->
-  <div class="clr-col-8" *ngIf="equipoSeleccionado">
-    <clr-select-container>
-      <label>Estado del Equipo</label>
-      <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
-        <option value="Operativo">Operativo</option>
-        <option value="Inoperativo">Inoperativo</option>
-        <option value="Irreparable">Irreparable</option>
-      </select>
-    </clr-select-container>
-  </div>
+
   <table class="table table-compact">
     <thead>
     <tr>
@@ -58,7 +48,7 @@
       <th class=" table-header">Descripción</th>
       <th class=" table-header">Ubicación</th>
       <th class=" table-header">Representante</th>
-      <th class=" table-header">Fecha Garantia</th>
+      <th class=" table-header">Fecha de Vto. de Garantía</th>
       <!--      <th class=" table-header left">Contrato</th>-->
     </tr>
     </thead>
@@ -234,6 +224,18 @@
         <textarea class="tamanho-total clr-col-6" clrTextarea [(ngModel)]="tareaRealizada" name="tareaRealizada">
       </textarea>
       </clr-textarea-container>
+    </div>
+
+    <!--    estado del equipo-->
+    <div class="clr-col-8" *ngIf="equipoSeleccionado">
+      <clr-select-container>
+        <label>Estado del Equipo</label>
+        <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
+          <option value="Operativo">Operativo</option>
+          <option value="Inoperativo">Inoperativo</option>
+          <option value="Irreparable">Irreparable</option>
+        </select>
+      </clr-select-container>
     </div>
     <br><br>
   </div>

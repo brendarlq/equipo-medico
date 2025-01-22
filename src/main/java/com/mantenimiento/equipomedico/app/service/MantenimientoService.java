@@ -44,4 +44,5 @@ public interface MantenimientoService {
 
     List<Mantenimiento> getAllByEquipoId(Long equipoId);
 
+    void removeById(long id);
 }

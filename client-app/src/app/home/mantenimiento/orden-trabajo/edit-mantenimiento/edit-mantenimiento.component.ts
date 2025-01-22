@@ -276,9 +276,20 @@ export class EditMantenimientoComponent implements OnInit {
 
   onSaveMantenimiento() {
 
-    if (this.equipoSeleccionado.fechaVenGarantia != null && (typeof this.equipoSeleccionado.fechaVenGarantia === 'string' || this.equipoSeleccionado.fechaVenGarantia instanceof String)) {
+    if (this.equipoSeleccionado.fechaVenGarantia != null
+      && (typeof this.equipoSeleccionado.fechaVenGarantia === 'string' || this.equipoSeleccionado.fechaVenGarantia instanceof String)) {
       let parts = this.fechaRealizacion.split('-');
       this.equipoSeleccionado.fechaVenGarantia = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+    }
+
+    if (this.servicioRealizadoList !=null){
+      for (let i = 0; i < this.servicioRealizadoList.length; i++) {
+        if (this.servicioRealizadoList[i].fechaMantenimiento != null
+          && (typeof this.servicioRealizadoList[i].fechaMantenimiento === 'string' || this.servicioRealizadoList[i].fechaMantenimiento instanceof String)) {
+          let parts = this.servicioRealizadoList[i].fechaMantenimiento.split('-');
+          this.servicioRealizadoList[i].fechaMantenimiento = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+        }
+      }
     }
 
     if(this.estadoOT == EstadoOrdenTrabajo.CANCELADO) {

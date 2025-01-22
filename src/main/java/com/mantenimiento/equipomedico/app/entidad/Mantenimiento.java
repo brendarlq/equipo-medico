@@ -4,7 +4,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * Registro del mantenimiento.
@@ -45,7 +47,7 @@ public class Mantenimiento implements Serializable {
 
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "orden_trabajo_id")
-    @JsonIgnoreProperties(value="mantenimientos", allowSetters = true)
+    @JsonBackReference
     private OrdenTrabajo ordenTrabajo;
 
     /**
