@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.mantenimiento.equipomedico.app.entidad.Contrato;
 import com.mantenimiento.equipomedico.app.entidad.Equipo;
 import com.mantenimiento.equipomedico.app.entidad.MetricasDTO;
 import com.mantenimiento.equipomedico.app.entidad.RegistroEstadosEquipo;
@@ -75,6 +76,30 @@ public class EquipoServiceImpl implements EquipoService
 	public List<Equipo> getSinContrato()
 	{
 		return equipoRepository.findAllByContratos_Empty();
+	}
+
+	/**
+	 * Obtiene todos los equipos con último contrato
+	 *
+	 * @return
+	 */
+	@Override
+	public List<Equipo> findEquiposWithUltimoContrato() {
+		// Obtener todos los equipos con sus contratos
+		List<Equipo> equipos = (ArrayList<Equipo>) equipoRepository.findAll();
+
+		// Filtrar los contratos para que cada equipo tenga solo el último contrato
+		equipos.forEach(equipo -> {
+			// Filtra el contrato más reciente en la lista de contratos del equipo
+			equipo.setContratos(
+					equipo.getContratos().stream()
+							.max(Comparator.comparing(Contrato::getFechaInicio))  // Filtra el contrato más reciente
+							.map(List::of)  // Convierte el contrato a una lista (si no hay, regresa una lista vacía)
+							.orElse(List.of())  // Si no hay contratos, regresa una lista vacía
+			);
+		});
+
+		return equipos;
 	}
 
 	/**

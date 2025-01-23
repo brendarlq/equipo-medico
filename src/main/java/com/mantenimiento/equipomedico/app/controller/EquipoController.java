@@ -204,4 +204,15 @@ public class EquipoController
 		@RequestParam Date fechaInicio, @RequestParam Date fechaFin) {
 		return equipoService.calculoMetricas(equipoId, fechaInicio, fechaFin);
 	}
+
+	/**
+	 * Obtiene la lista de equipos con el último contrato
+	 *
+	 * @return equipos lista de equipos con el último contrato
+	 */
+	@RequestMapping(value = "/ultimo-contrato", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<Equipo> findEquiposWithUltimoContrato()
+	{
+		return equipoService.findEquiposWithUltimoContrato();
+	}
 }

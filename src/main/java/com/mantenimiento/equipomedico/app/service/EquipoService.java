@@ -44,6 +44,13 @@ public interface EquipoService
 
 
 	/**
+	 * Obtiene la lista de equipos con el último controtao
+	 *
+	 * @return
+	 */
+	List<Equipo> findEquiposWithUltimoContrato();
+
+	/**
 	 * Obtiene el equipo mediante su numero patrimonial.
 	 *
 	 * @param numeroPatrimonial
