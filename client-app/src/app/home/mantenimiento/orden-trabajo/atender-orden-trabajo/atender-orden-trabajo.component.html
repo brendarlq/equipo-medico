@@ -49,7 +49,7 @@
       <th class=" table-header">Ubicación</th>
       <th class=" table-header">Representante</th>
       <th class=" table-header">Fecha de Vto. de Garantía</th>
-      <!--      <th class=" table-header left">Contrato</th>-->
+            <th class=" table-header left">Contrato Nro</th>
     </tr>
     </thead>
     <tbody>
@@ -67,7 +67,7 @@
       </td>
       <td class="table-column">{{ equipoSeleccionado?.representante.nombre }}</td>
       <td class="table-column">{{ equipoSeleccionado?.fechaVenGarantia }}</td>
-      <!--      <td class=" table-columnleft">{{equipo?.contrato.numeroContrato}}</td>-->
+      <td class="table-column text-center">{{equipoSeleccionado.contratos[0]? equipoSeleccionado.contratos[0].numeroContrato: 'Sin contrato'}}</td>
     </tr>
     </tbody>
   </table>

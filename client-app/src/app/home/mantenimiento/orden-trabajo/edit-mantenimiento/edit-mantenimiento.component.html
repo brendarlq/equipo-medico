@@ -48,7 +48,7 @@
       <th class=" table-header">Ubicación</th>
       <th class=" table-header">Representante</th>
       <th class=" table-header">Fecha de Vto. de Garantía</th>
-<!--      <th class=" table-header left">Contrato</th>-->
+      <th class=" table-header left">Contrato Nro</th>
     </tr>
     </thead>
     <tbody>
@@ -65,7 +65,7 @@
         {{equipoSeleccionado?.ubicacion?.numeroSala ? equipoSeleccionado?.ubicacion?.numeroSala + ' ' : '' }}</td>
       <td class="table-column">{{equipoSeleccionado?.representante.nombre}}</td>
       <td class="table-column">{{equipoSeleccionado?.fechaVenGarantia}}</td>
-<!--      <td class=" table-columnleft">{{equipo?.contrato.numeroContrato}}</td>-->
+      <td class="table-column text-center">{{equipoSeleccionado.contratos[0]? equipoSeleccionado.contratos[0].numeroContrato: 'Sin contrato'}}</td>
     </tr>
     </tbody>
   </table>
@@ -180,7 +180,6 @@
         <th class="table-header">Tipo de mantenimiento</th>
         <th class="table-header">Tarea Realizada</th>
         <th class="table-header">Nombre del Técnico</th>
-<!--        <th class="table-header">Estado del Equipo</th>-->
 <!--        <th style="width:6rem"></th>-->
       </tr>
     </ng-template>
@@ -192,7 +191,7 @@
         <td class="table-column">{{servicio?.tipoServicio}}</td>
         <td class="table-column" style="text-align: right">{{servicio?.tareaRealizada}}</td>
         <td class="table-column">{{servicio?.nombreTecnico}}</td>
-<!--        <td class="table-column" style="text-align: center">{{servicio.estadoEquipo}}</td>-->
+
 <!--        <td>-->
 <!--          <button type="button" pButton pRipple icon="pi pi-trash" class="p-button-danger"-->
 <!--                  (click)="eliminarDetalleServicio(servicio)"></button>-->

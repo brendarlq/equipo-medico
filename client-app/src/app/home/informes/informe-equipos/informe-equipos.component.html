@@ -97,10 +97,10 @@
           <th class="column-width">Nro. Serie:</th>
           <td>{{equipoSeleccionado?.numeroSerie}}</td>
         </tr>
-<!--        <tr>-->
-<!--          <th class="column-width">Estado Contrato:</th>-->
-<!--          <td>{{equipoSeleccionado?.contrato?.estadoContrato}}</td>-->
-<!--        </tr>-->
+        <tr>
+          <th class="column-width">Estado Contrato:</th>
+          <td>{{equipoSeleccionado.contratos[0]? equipoSeleccionado.contratos[0].estadoContrato: 'Sin contrato'}}</td>
+        </tr>
         </tbody>
       </table>
     </div>

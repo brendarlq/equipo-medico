@@ -21,7 +21,8 @@ export class EquipoService {
    * @returns {Observable<Equipo[]>}
    */
   getAllEquipos(): Observable<Equipo[]> {
-    return this.apiRequest.get(this.urlEquipos);
+    // return this.apiRequest.get(this.urlEquipos);
+    return this.apiRequest.get(this.urlEquipos + 'ultimo-contrato');
   }
 
   /**
