@@ -2,13 +2,7 @@ package com.mantenimiento.equipomedico.app.service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.mantenimiento.equipomedico.app.entidad.Contrato;
@@ -93,9 +87,9 @@ public class EquipoServiceImpl implements EquipoService
 			// Filtra el contrato más reciente en la lista de contratos del equipo
 			equipo.setContratos(
 					equipo.getContratos().stream()
-							.max(Comparator.comparing(Contrato::getFechaInicio))  // Filtra el contrato más reciente
-							.map(List::of)  // Convierte el contrato a una lista (si no hay, regresa una lista vacía)
-							.orElse(List.of())  // Si no hay contratos, regresa una lista vacía
+							.max(Comparator.comparing(Contrato::getFechaInicio))
+							.map(contrato -> new ArrayList<>(Collections.singletonList(contrato)))  // Convierte el contrato en una lista
+							.orElse(new ArrayList<>())  // Si no hay contratos, regresa una lista vacía
 			);
 		});
 
