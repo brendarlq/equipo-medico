@@ -149,6 +149,7 @@ export class EditContratoComponent implements OnInit {
   onSelectRepresentante() {
     this.representanteService.getRepresentanteById(this.repreId).subscribe(
       representante => {
+        this.repreId = representante.id;
         this.repreSeleccionado = representante;
       },
       error => {
@@ -242,6 +243,7 @@ export class EditContratoComponent implements OnInit {
     this.numeroProcedimiento = contrato.numeroProcedimiento;
     this.estadoContrato = contrato.estadoContrato;
     this.repreSeleccionado = contrato.representante;
+    this.repreId = this.repreSeleccionado != null? this.repreSeleccionado.id: 'Agregar Representante';
     this.fechaInicio = datepipe.transform(contrato.fechaInicio, 'yyyy-MM-dd');
     this.fechaFin = datepipe.transform(contrato.fechaFin, 'yyyy-MM-dd');
     this.selectedEquipos = contrato.equipos;
