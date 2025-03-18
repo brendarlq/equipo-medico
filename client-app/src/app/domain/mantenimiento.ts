@@ -2,9 +2,9 @@ import {OrdenTrabajo} from "./orden-trabajo";
 
 export class Mantenimiento {
   constructor(public id: number,
-              public numeroOrdenServicio: number,
+              public horasDeUso: number,
               public tareaRealizada: string,
-              public informeNumero: number,
+              public codigoError: string,
               public nombreTecnico: string,
               public tipoServicio: string,
               public estadoEquipo: string,

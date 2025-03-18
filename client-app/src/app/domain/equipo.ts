@@ -28,3 +28,23 @@ export class Equipo {
               public fechaCompra?: any) {
   }
 }
+
+export class EquipoDTO {
+
+  constructor(public idEquipo: number,
+              public numeroSerie: string,
+              public numeroPatrimonial: string,
+              public estadoEquipo: string,
+              public descripcionEquipo: string,
+              public tipoEquipo: string,
+              public modelo: string,
+              public marca: string,
+              public representanteEquipo: string,
+              public bloque: string,
+              public numeroSala: string,
+              public nivel: string,
+              public contratoId: number,
+              public estadoContrato: string,
+              public fechaVenGarantia?: any) {
+  }
+}

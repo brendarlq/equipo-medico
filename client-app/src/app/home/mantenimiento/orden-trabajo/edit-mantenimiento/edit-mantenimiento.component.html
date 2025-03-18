@@ -6,8 +6,8 @@
       <select clrSelect name="estadoOT" #selectEstadoOT
               [(ngModel)]="estadoOT"
               (change)="onSelectedEstado(selectEstadoOT.value)">
-        <option *ngFor="let estado of estados"
-                value={{estado.nombre}}>{{estado.nombre}}
+        <option *ngFor="let estadoOT of estadosOT"
+                value={{estadoOT.nombre}}>{{estadoOT.nombre}}
         </option>
       </select>
     </clr-select-container>
@@ -65,7 +65,7 @@
         {{equipoSeleccionado?.ubicacion?.numeroSala ? equipoSeleccionado?.ubicacion?.numeroSala + ' ' : '' }}</td>
       <td class="table-column">{{equipoSeleccionado?.representante.nombre}}</td>
       <td class="table-column">{{equipoSeleccionado?.fechaVenGarantia}}</td>
-      <td class="table-column text-center">{{equipoSeleccionado.contratos[0]? equipoSeleccionado.contratos[0].numeroContrato: 'Sin contrato'}}</td>
+<!--      <td class="table-column text-center">{{equipoSeleccionado.contratos[0]? equipoSeleccionado.contratos[0].numeroContrato: 'Sin contrato'}}</td>-->
     </tr>
     </tbody>
   </table>
@@ -100,11 +100,22 @@
       </select>
     </clr-select-container>
   </div>
-  <div class="clr-col-8">
+  <div class="clr-col-10">
     <div *ngIf="solicitudRepuesto != null">
       <p class="label-input ">Solicitud Repuesto ID Seleccionada: {{solicitudRepuesto?.id}}</p>
     </div>
 
+  </div>
+  <div class="clr-col-8">
+    <clr-select-container>
+      <label>Estado de la Solicitud de Repuestos:</label>
+      <select clrSelect name="estadoSR" [(ngModel)]="solicitudRepuestoEstado" #selectEstadoSR
+              (change)="onSelectedEstadoSolicitud(selectEstadoSR.value)">
+        <option *ngFor="let estadoR of estadosSolicitudReps"
+                value={{estadoR.nombre}}>{{estadoR.nombre}}
+        </option>
+      </select>
+    </clr-select-container>
   </div>
   <br/>
   <div class="card">
@@ -204,8 +215,8 @@
   <div class="clr-row clr-justify-content-start">
     <div class="clr-col-6">
       <clr-input-container>
-        <label class="clr-col-5">Nro Orden Servicio:</label>
-        <input clrInput type="text" [(ngModel)]="numeroOrdenServicio" name="nroOrdenServicio"/>
+        <label class="clr-col-5">Horas de uso:</label>
+        <input clrInput type="text" [(ngModel)]="horasDeUso" name="horasDeUso"/>
       </clr-input-container>
 
       <clr-input-container>
@@ -216,8 +227,8 @@
     </div>
     <div class="clr-col-6">
       <clr-input-container>
-        <label class="clr-col-5">Informe Nro:</label>
-        <input clrInput type="text" [(ngModel)]="informeNro" name="informeNro"/>
+        <label class="clr-col-5">Código de Error:</label>
+        <input clrInput type="text" [(ngModel)]="codigoError" name="codigoError"/>
       </clr-input-container>
     </div>
 
@@ -231,8 +242,8 @@
     <!--    estado del equipo-->
     <div class="clr-col-8">
       <clr-select-container>
-        <label>Estado del Equipo</label>
-        <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
+        <label>Estado</label>
+        <select clrSelect name="estadoEquipo" [(ngModel)]="estadoEquipo">
           <option value="Operativo">Operativo</option>
           <option value="Inoperativo">Inoperativo</option>
           <option value="Irreparable">Irreparable</option>

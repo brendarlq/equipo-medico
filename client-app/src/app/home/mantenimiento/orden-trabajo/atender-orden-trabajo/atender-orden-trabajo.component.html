@@ -67,7 +67,7 @@
       </td>
       <td class="table-column">{{ equipoSeleccionado?.representante.nombre }}</td>
       <td class="table-column">{{ equipoSeleccionado?.fechaVenGarantia }}</td>
-      <td class="table-column text-center">{{equipoSeleccionado.contratos[0]? equipoSeleccionado.contratos[0].numeroContrato: 'Sin contrato'}}</td>
+<!--      <td class="table-column text-center">{{equipoSeleccionado.contratos[0]? equipoSeleccionado.contratos[0].numeroContrato: 'Sin contrato'}}</td>-->
     </tr>
     </tbody>
   </table>
@@ -100,6 +100,17 @@
         <option>Seleccionar Solicitud ID</option>
         <option *ngFor="let solicitud of solicitudRepuestoPendientes"
                 value={{solicitud.id}}>{{ solicitud.id }}
+        </option>
+      </select>
+    </clr-select-container>
+  </div>
+  <div class="clr-col-8">
+    <clr-select-container>
+      <label>Estado de la Solicitud de Repuestos:</label>
+      <select clrSelect name="estadoSR" [(ngModel)]="solicitudRepuestoEstado" #selectEstadoSR
+              (change)="onSelectedEstadoSolicitud(selectEstadoSR.value)">
+        <option *ngFor="let estadoR of estadosSolicitudReps"
+                value={{estadoR.nombre}}>{{estadoR.nombre}}
         </option>
       </select>
     </clr-select-container>
@@ -179,7 +190,6 @@
         <th class="table-header">Tipo de mantenimiento</th>
         <th class="table-header">Tarea Realizada</th>
         <th class="table-header">Nombre del Técnico</th>
-<!--        <th style="width:6rem"></th>-->
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-servicio>
@@ -190,10 +200,6 @@
         <td class="table-column">{{ servicio?.tipoServicio }}</td>
         <td class="table-column" style="text-align: right">{{ servicio?.tareaRealizada }}</td>
         <td class="table-column">{{ servicio?.nombreTecnico }}</td>
-<!--        <td>-->
-<!--          <button type="button" pButton pRipple icon="pi pi-trash" class="p-button-danger"-->
-<!--                  (click)="eliminarDetalleServicio(servicio)"></button>-->
-<!--        </td>-->
       </tr>
     </ng-template>
   </p-table>
@@ -201,8 +207,8 @@
   <div class="clr-row clr-justify-content-start">
     <div class="clr-col-6">
       <clr-input-container>
-        <label class="clr-col-5">Nro Orden Servicio:</label>
-        <input clrInput type="text" [(ngModel)]="numeroOrdenServicio" name="nroOrdenServicio"/>
+        <label class="clr-col-5">Horas de Uso:</label>
+        <input clrInput type="text" [(ngModel)]="horasDeUso" name="horasDeUso"/>
       </clr-input-container>
 
       <clr-input-container>
@@ -213,8 +219,8 @@
     </div>
     <div class="clr-col-6">
       <clr-input-container>
-        <label class="clr-col-5">Informe Nro:</label>
-        <input clrInput type="text" [(ngModel)]="informeNro" name="informeNro"/>
+        <label class="clr-col-5">Código de Error:</label>
+        <input clrInput type="text" [(ngModel)]="codigoError" name="codigoError"/>
       </clr-input-container>
     </div>
 
@@ -229,8 +235,8 @@
     <!--    estado del equipo-->
     <div class="clr-col-8" *ngIf="equipoSeleccionado">
       <clr-select-container>
-        <label>Estado del Equipo</label>
-        <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
+        <label>Estado</label>
+        <select clrSelect name="estadoEquipo" [(ngModel)]="estadoEquipo">
           <option value="Operativo">Operativo</option>
           <option value="Inoperativo">Inoperativo</option>
           <option value="Irreparable">Irreparable</option>

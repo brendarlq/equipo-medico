@@ -31,6 +31,12 @@ export const ESTADO_EDIT_SOLICITUD: EstadoSolicitud[] = [
   new EstadoSolicitud('Cancelado')
 ];
 
+export const ESTADO_SOLICITUD_EN_OT: EstadoSolicitud[] = [
+  new EstadoSolicitud('Pendiente en Orden'),
+  new EstadoSolicitud('Finalizado'),
+  new EstadoSolicitud('Cancelado')
+];
+
 export const ESTADO_ORDEN_ATENDIDA: EstadoOrdenTrabajoLista[] = [
   new EstadoOrdenTrabajoLista('En Proceso'),
   new EstadoOrdenTrabajoLista('Cancelado'),

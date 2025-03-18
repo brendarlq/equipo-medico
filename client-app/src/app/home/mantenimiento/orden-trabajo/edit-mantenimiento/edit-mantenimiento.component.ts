@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {EstadoOrdenTrabajoLista, OrdenTrabajo, TipoServicio} from "../../../../domain/orden-trabajo";
 import {Equipo} from "../../../../domain/equipo";
-import {SolicitudRepuesto} from "../../../../domain/solicitud-repuesto";
+import {EstadoSolicitud, SolicitudRepuesto} from "../../../../domain/solicitud-repuesto";
 import {Mantenimiento} from "../../../../domain/mantenimiento";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {OrdenTrabajoService} from "../../../../service/orden-trabajo.service";
@@ -32,7 +32,8 @@ export class EditMantenimientoComponent implements OnInit {
   responsable: string;
   fechaRealizacion: any;
   equipoSeleccionado: Equipo;
-  estados: EstadoOrdenTrabajoLista[];
+  estadoEquipo: string;
+  estadosOT: EstadoOrdenTrabajoLista[];
 
   // solicitud repuesto
   solicitudRepId: any;
@@ -40,6 +41,9 @@ export class EditMantenimientoComponent implements OnInit {
   solicitudRepuestoPendientes: SolicitudRepuesto[];
   esNuevaSolicitudRepuesto: boolean;
   fueSolicitudRepuestoActualizada: boolean;
+  solicitudRepuestoEstado: string;
+  // estado solicitud
+  estadosSolicitudReps: EstadoSolicitud[];
 
   // Tipo de Servicios
   tipoServicios: TipoServicio[];
@@ -52,12 +56,10 @@ export class EditMantenimientoComponent implements OnInit {
   detallesAEliminar = new Array<SolicitudRepuestoDetalle>();
 
   // mantenimiento
-  mantenimientoId: number;
   tareaRealizada: string;
-  informeNro: number;
-  numeroOrdenServicio:number;
+  codigoError: string;
+  horasDeUso: number;
   nombreTecnico: string;
-  estadoEquipo:string;
   fechaMantenimiento: any;
   servicioRealizado: Mantenimiento;
   servicioRealizadoList: Mantenimiento[];
@@ -80,6 +82,7 @@ export class EditMantenimientoComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getEstadosEditSolicitud();
     this.fechaMantenimiento = new Date();
     this.esNuevaSolicitudRepuesto = false;
     this.fueSolicitudRepuestoActualizada = false;
@@ -100,18 +103,43 @@ export class EditMantenimientoComponent implements OnInit {
       });
   }
 
+
+  /**
+   * Se obtiene la lista de los estados para editar una solicitud.
+   */
+  getEstadosEditSolicitud(): void {
+    this.solicitudRepuestoService.getEstadosSolicitudEnOT().subscribe(
+      estados => {
+        this.estadosSolicitudReps = estados;
+      },
+      error => {
+        this.errorMessage = error.error;
+        console.log(this.errorMessage)
+        this.estadosSolicitudReps = [];
+      }
+    );
+  }
+
+  /**
+   * Se selecciona un estado para la solicitud.
+   * @param {string} value
+   */
+  onSelectedEstadoSolicitud(value: string): void {
+    this.solicitudRepuestoEstado = value;
+  }
+
   /**
    * Se obtiene la lista de los estados para editar una solicitud.
    */
   getEstadosOrdenTrabajo(): void {
     this.ordenTrabajoService.getEstadosOrdenAtendida().subscribe(
       estados => {
-        this.estados = estados;
+        this.estadosOT = estados;
       },
       error => {
         this.errorMessage = error.error;
         console.log(this.errorMessage)
-        this.estados = [];
+        this.estadosOT = [];
       }
     );
   }
@@ -155,6 +183,7 @@ export class EditMantenimientoComponent implements OnInit {
       this.fechaRealizacion = datepipe.transform(orden.fechaSolicitud, 'dd-MM-yyyy').toString();
     }
     this.equipoSeleccionado = orden.equipo;
+    this.estadoEquipo = this.equipoSeleccionado.estado;
     this.equipoSeleccionado.fechaVenGarantia = datepipe.transform(this.equipoSeleccionado.fechaVenGarantia, 'dd-MM-yyyy');
     this.solicitudRepuesto = orden.solicitudRepuesto;
     if (this.solicitudRepuesto != null) {
@@ -168,6 +197,7 @@ export class EditMantenimientoComponent implements OnInit {
     this.solicitudRepuesto = orden.solicitudRepuesto;
     if (this.solicitudRepuesto != null) {
       this.solicitudRepId = this.solicitudRepuesto.id.toString();
+      this.solicitudRepuestoEstado = this.solicitudRepuesto.estado;
       this.solicitudRepuestoDetalles = this.solicitudRepuesto.solicitudRepuestoDetalles;
     }
   }
@@ -186,6 +216,7 @@ export class EditMantenimientoComponent implements OnInit {
   onSelectedSolicitudRepuesto(): void {
     if (this.solicitudRepId != "Seleccionar Solicitud ID") {
       this.buscarSolicitudRepuestoById(+this.solicitudRepId);
+      this.solicitudRepuestoEstado = EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO;
     } else {
       this.solicitudRepuesto = null;
       this.repErrorMessage = '';
@@ -258,6 +289,9 @@ export class EditMantenimientoComponent implements OnInit {
     this.solicitudRepuestoDetalles.push(value);
     this.detalleSeleccionado = null;
     this.modalAddEditDetalleOpen = false;
+    if (this.solicitudRepuesto == null) {
+      this.solicitudRepuestoEstado = EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO;
+    }
     // this.verificarSolicitudRepuesto();
   }
 
@@ -304,8 +338,8 @@ export class EditMantenimientoComponent implements OnInit {
     } else {
       this.verificarRepuestos();
 
-      if (this.informeNro!= undefined && this.tareaRealizada != '' && this.nombreTecnico != '') {
-        this.servicioRealizado = new Mantenimiento(null, this.numeroOrdenServicio, this.tareaRealizada, this.informeNro, this.nombreTecnico,
+      if ((this.tareaRealizada != undefined && this.tareaRealizada != '' ) && (this.nombreTecnico != undefined && this.nombreTecnico != '')) {
+        this.servicioRealizado = new Mantenimiento(null, this.horasDeUso, this.tareaRealizada, this.codigoError, this.nombreTecnico,
           this.ordenTrabajo.tipoServicio, this.equipoSeleccionado.estado, this.ordenTrabajo, this.fechaMantenimiento);
         this.saveMantenimiento(this.servicioRealizado);
       }
@@ -313,22 +347,16 @@ export class EditMantenimientoComponent implements OnInit {
   }
 
   verificarRepuestos(){
-    if (this.solicitudRepuestoDetalles != null && this.solicitudRepuestoDetalles.length > 0) {
       // Si la solicitud de repuesto se crea a partir de la orden de trabajo atendida
-      if (this.solicitudRepuesto == null) {
+      if (this.solicitudRepuesto == null && (this.solicitudRepuestoDetalles != null && this.solicitudRepuestoDetalles.length > 0)) {
         this.esNuevaSolicitudRepuesto = true;
-        this.solicitudRepuesto = new SolicitudRepuesto(null, EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO,
+        this.solicitudRepuesto = new SolicitudRepuesto(null, this.solicitudRepuestoEstado,
           this.solicitudRepuestoDetalles, new Date());
-      } else {
+      } else if (this.solicitudRepId != null) {
         // si se obtuvo una solicitud de repuesto buscando por su Id
-        this.solicitudRepuesto.estado = EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO;
+        this.solicitudRepuesto.estado = this.solicitudRepuestoEstado;
         this.solicitudRepuesto.solicitudRepuestoDetalles = this.solicitudRepuestoDetalles;
       }
-    } else {
-      if (this.solicitudRepuesto != null) {
-        this.solicitudRepuesto = null;
-      }
-    }
 
     // si hay elementos que eliminar de la solicitud de repuestos, se procede a eliminarlos y luego actualizar la solicitud.
     if (this.detallesAEliminar != null && this.detallesAEliminar.length > 0) {
@@ -337,7 +365,7 @@ export class EditMantenimientoComponent implements OnInit {
 
     if (this.esNuevaSolicitudRepuesto) {
       this.saveSolicitudRepuesto(this.solicitudRepuesto);
-    } else if (this.fueSolicitudRepuestoActualizada) {
+    } else {
       this.updateSolicitudRepuesto(this.solicitudRepuesto, false);
     }
   }
@@ -430,25 +458,12 @@ export class EditMantenimientoComponent implements OnInit {
    * Se limpian los campos del servicio agregado.
    */
   clearDatosServicios() {
-    this.numeroOrdenServicio = null;
+    this.horasDeUso = null;
     this.nombreTecnico = "";
-    this.informeNro= null;
+    this.codigoError = "";
     this.tareaRealizada= "";
   }
 
-
-  /**
-   * Se quita de la lista de detalles el servicio agregado
-   */
-  eliminarDetalleServicio(servicioRealizado: Mantenimiento): void {
-    for (let i = 0; i < this.servicioRealizadoList.length; i++) {
-      if (servicioRealizado.id === this.servicioRealizadoList[i].id) {
-        this.servicioRealizadoAEliminar.push(this.servicioRealizadoList[i])
-        this.servicioRealizadoList.splice(i, 1);
-        break;
-      }
-    }
-  }
 
 
   /**
@@ -464,8 +479,13 @@ export class EditMantenimientoComponent implements OnInit {
           this.ordenTrabajo.equipo.estado = EstadoEquipo.OPERATIVO;
           this.updateEquipo(this.ordenTrabajo.equipo);
         } else {
-          this.manteniminetoService.emitExisteOrdenTrabajoAtendida(true);
-          this.goBack();
+          if(this.ordenTrabajo.equipo.estado != this.estadoEquipo && this.estadoEquipo != undefined){
+            this.ordenTrabajo.equipo.estado = this.estadoEquipo;
+            this.updateEquipo(this.ordenTrabajo.equipo);
+          } else {
+            this.manteniminetoService.emitExisteOrdenTrabajoAtendida(true);
+            this.goBack();
+          }
         }
       },
       error => {

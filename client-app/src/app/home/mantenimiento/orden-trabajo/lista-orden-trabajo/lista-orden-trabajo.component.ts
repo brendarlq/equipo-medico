@@ -108,7 +108,7 @@ export class ListaOrdenTrabajoComponent implements OnInit {
    * @param tipoSeleccionado
    */
   getAllOrdenTrabajoByTipoMantenimiento(tipoSeleccionado: string): void {
-    this.ordenTrabajoService.getAllByTipoMantenimiento(tipoSeleccionado).subscribe(
+    this.ordenTrabajoService.getAllByTipoMantenimientoOrdenPendiente(tipoSeleccionado).subscribe(
       list => {
         this.ordenTrabajoList = list;
         this.formateoFechas();

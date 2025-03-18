@@ -3,7 +3,7 @@ import {environment} from '../../environments/environment';
 import {ApiRequestService} from './api-request.service';
 import {EstadoSolicitud, SolicitudRepuesto} from '../domain/solicitud-repuesto';
 import {BehaviorSubject, Observable, of} from 'rxjs';
-import {ESTADO_EDIT_SOLICITUD} from "../utils/mock-data/constantes";
+import {ESTADO_EDIT_SOLICITUD, ESTADO_SOLICITUD_EN_OT} from "../utils/mock-data/constantes";
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +11,7 @@ import {ESTADO_EDIT_SOLICITUD} from "../utils/mock-data/constantes";
 export class SolicitudRepuestoService {
 
   private estadosEditSolicitud = ESTADO_EDIT_SOLICITUD;
+  private estadosSolicitudEnOT = ESTADO_SOLICITUD_EN_OT;
   private urlRepuestos = environment.service_uri + '/solicitudrepuestos';
 
 
@@ -27,6 +28,10 @@ export class SolicitudRepuestoService {
    */
   getEstadosEditSolicitud(): Observable<EstadoSolicitud[]> {
     return of(this.estadosEditSolicitud);
+  }
+
+  getEstadosSolicitudEnOT(): Observable<EstadoSolicitud[]> {
+    return of(this.estadosSolicitudEnOT);
   }
 
   /**

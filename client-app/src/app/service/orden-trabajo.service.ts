@@ -49,8 +49,13 @@ export class OrdenTrabajoService {
     return this.apiRequest.get(url);
   }
 
-  getAllByTipoMantenimiento(tipo: string): Observable<OrdenTrabajo[]> {
-    const url = this.urlOrdenTrabajo + '/filtro/by-Tipo/' + tipo;
+  getAllByTipoMantenimientoOrdenPendiente(tipo: string): Observable<OrdenTrabajo[]> {
+    const url = this.urlOrdenTrabajo + '/orden-pendiente/by-Tipo/' + tipo;
+    return this.apiRequest.get(url);
+  }
+
+  getAllByTipoMantenimientoOrdenAtendida(tipo: string): Observable<OrdenTrabajo[]> {
+    const url = this.urlOrdenTrabajo + '/orden-atendida/by-Tipo/' + tipo;
     return this.apiRequest.get(url);
   }
 

@@ -296,19 +296,17 @@
       <th class="left">Fecha</th>
       <th>Horas de uso del Equipo</th>
       <th>Trabajo Realizado</th>
-      <th>Estado del Equipo</th>
-      <th>Informe Nro</th>
+      <th>Código del Error</th>
       <th class="left">Tipo de Mantenimiento</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let mantenimiento of mantenimientos">
       <td class="left">{{mantenimiento.fechaMantenimiento}}</td>
-      <td></td>
+      <td>{{mantenimiento.horasDeUso}}</td>
       <td>{{mantenimiento.tareaRealizada}}</td>
-      <td></td>
-      <td>{{mantenimiento.informeNumero}}</td>
-      <td class="left"></td>
+      <td>{{mantenimiento.codigoError}}</td>
+      <td class="left">{{mantenimiento.tipoServicio}}</td>
     </tr>
     </tbody>
   </table>
@@ -376,7 +374,7 @@
       <th class="left">Fecha</th>
       <th>Código</th>
       <th>Descripción</th>
-      <th>Cantidad Solicitada</th>
+      <th>Cantidad Utilizada</th>
       <th>Precio Unitario</th>
       <th class="left">Estado del Repuesto</th>
     </tr>
@@ -386,7 +384,7 @@
       <td class="left">{{detalle?.solicitud?.fechaSolicitud}}</td>
       <td>{{detalle?.repuesto?.codigo}}</td>
       <td>{{detalle?.repuesto?.descripcionArticulo}}</td>
-      <td>{{detalle?.cantidadSolicitada}}</td>
+      <td>{{detalle?.cantidadUsada}}</td>
       <td>{{detalle?.repuesto?.precio}}</td>
       <td class="left">{{detalle?.solicitud?.estado}}</td>
     </tr>
