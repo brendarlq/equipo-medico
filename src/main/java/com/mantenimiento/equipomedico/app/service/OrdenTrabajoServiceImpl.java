@@ -66,9 +66,13 @@ public class OrdenTrabajoServiceImpl implements OrdenTrabajoService {
     }
 
     @Override
-    public List<OrdenTrabajo> getAllByTipoServicioEquals(String tipoServicio)
+    public List<OrdenTrabajo> getAllByTipoServicioEquals(String tipoServicio,String tipoOrdenTrabajoVista)
     {
-        return ordenTrabajoRepository.getAllByTipoServicioEquals(tipoServicio);
+        // Orden de trabajos Pendientes (OTP)
+        if(tipoOrdenTrabajoVista.equals("OTP")) {
+            return ordenTrabajoRepository.getAllByTipoServicioAndEstadoEquals(tipoServicio, "Pendiente");
+        }
+        return ordenTrabajoRepository.getAllByTipoServicioAndEstadoBetween(tipoServicio,"En Proceso", "Finalizada");
     }
 
     @Override

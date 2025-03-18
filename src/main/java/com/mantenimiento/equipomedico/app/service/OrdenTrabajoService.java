@@ -40,7 +40,7 @@ public interface OrdenTrabajoService {
     List<OrdenTrabajo> getAll();
 
     List<OrdenTrabajo> getAllByEstadoEquals(String estado);
-    List<OrdenTrabajo> getAllByTipoServicioEquals(String tipoServicio);
+    List<OrdenTrabajo> getAllByTipoServicioEquals(String tipoServicio,String tipoOrdenTrabajoVista);
 
     List<OrdenTrabajo> getAllByEquipoId(Long id);
 

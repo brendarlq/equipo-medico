@@ -25,16 +25,16 @@ public class Mantenimiento implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "numero_orden_servicio")
-    private Integer numeroOrdenServicio;
+    @Column(name = "horas_de_uso")
+    private Integer horasDeUso;
     @Column(name = "fecha_manteniminento")
     private Date fechaMantenimiento;
 
     @Column(name = "tarea_realizada")
     private String tareaRealizada;
 
-    @Column(name = "informe_numero")
-    private Integer informeNumero;
+    @Column(name = "codigo_error")
+    private String CodigoError;
 
     @Column(name = "nombre_tecnico")
     private String nombreTecnico;
@@ -102,24 +102,6 @@ public class Mantenimiento implements Serializable {
      */
     public void setTareaRealizada(String tareaRealizada) {
         this.tareaRealizada = tareaRealizada;
-    }
-
-    /**
-     * Gets informeNumero
-     *
-     * @return value of informeNumero
-     */
-    public Integer getInformeNumero() {
-        return informeNumero;
-    }
-
-    /**
-     * Set informeNumero
-     *
-     * @param informeNumero
-     */
-    public void setInformeNumero(Integer informeNumero) {
-        this.informeNumero = informeNumero;
     }
 
 
@@ -192,26 +174,6 @@ public class Mantenimiento implements Serializable {
     }
 
     /**
-     * Gets numeroOrdenServicio
-     *
-     * @return value of numeroOrdenServicio
-     */
-    public Integer getNumeroOrdenServicio()
-    {
-        return numeroOrdenServicio;
-    }
-
-    /**
-     * Set numeroOrdenServicio
-     *
-     * @param numeroOrdenServicio
-     */
-    public void setNumeroOrdenServicio(Integer numeroOrdenServicio)
-    {
-        this.numeroOrdenServicio = numeroOrdenServicio;
-    }
-
-    /**
      * Gets ordenTrabajo
      *
      * @return value of ordenTrabajo
@@ -219,5 +181,25 @@ public class Mantenimiento implements Serializable {
     public OrdenTrabajo getOrdenTrabajo()
     {
         return ordenTrabajo;
+    }
+
+    public Integer getHorasDeUso()
+    {
+        return horasDeUso;
+    }
+
+    public void setHorasDeUso(Integer horasDeUso)
+    {
+        this.horasDeUso = horasDeUso;
+    }
+
+    public String getCodigoError()
+    {
+        return CodigoError;
+    }
+
+    public void setCodigoError(String codigoError)
+    {
+        CodigoError = codigoError;
     }
 }

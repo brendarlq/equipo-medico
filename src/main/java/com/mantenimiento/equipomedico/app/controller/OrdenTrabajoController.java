@@ -72,10 +72,16 @@ public class OrdenTrabajoController
         return ordenTrabajoService.getAllByEstadoEquals(estado);
     }
 
-    @RequestMapping(value = "filtro/by-Tipo/{tipo}",
+    @RequestMapping(value = "orden-pendiente/by-Tipo/{tipo}",
         method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<OrdenTrabajo> getAllByTipoMantenimiento(@PathVariable String tipo) {
-        return ordenTrabajoService.getAllByTipoServicioEquals(tipo);
+    public List<OrdenTrabajo> getAllByTipoMantenimientoOrdenPendiente(@PathVariable String tipo) {
+        return ordenTrabajoService.getAllByTipoServicioEquals(tipo,"OTP");
+    }
+
+    @RequestMapping(value = "orden-atendida/by-Tipo/{tipo}",
+        method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<OrdenTrabajo> getAllByTipoMantenimientoOrdenAtendida(@PathVariable String tipo) {
+        return ordenTrabajoService.getAllByTipoServicioEquals(tipo,"OTA");
     }
 
     /**
