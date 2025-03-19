@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.mantenimiento.equipomedico.app.entidad.Equipo;
-import com.mantenimiento.equipomedico.app.entidad.Mantenimiento;
+import com.mantenimiento.equipomedico.app.entidad.EquipoDTO;
 import com.mantenimiento.equipomedico.app.entidad.MetricasDTO;
 import com.mantenimiento.equipomedico.app.service.EquipoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -211,7 +211,7 @@ public class EquipoController
 	 * @return equipos lista de equipos con el último contrato
 	 */
 	@RequestMapping(value = "/ultimo-contrato", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Equipo> findEquiposWithUltimoContrato()
+	public List<EquipoDTO> findEquiposWithUltimoContrato()
 	{
 		return equipoService.findEquiposWithUltimoContrato();
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.mantenimiento.equipomedico.app.entidad.Equipo;
+import com.mantenimiento.equipomedico.app.entidad.EquipoDTO;
 import com.mantenimiento.equipomedico.app.entidad.MetricasDTO;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +49,7 @@ public interface EquipoService
 	 *
 	 * @return
 	 */
-	List<Equipo> findEquiposWithUltimoContrato();
+	List<EquipoDTO> findEquiposWithUltimoContrato();
 
 	/**
 	 * Obtiene el equipo mediante su numero patrimonial.
