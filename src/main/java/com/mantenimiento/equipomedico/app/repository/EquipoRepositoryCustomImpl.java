@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
 import com.mantenimiento.equipomedico.app.entidad.Equipo;
 
@@ -41,8 +38,12 @@ public class EquipoRepositoryCustomImpl implements EquipoRepositoryCustom
 			predicates.add(cb.equal(equipoRoot.get("estado"), estadoEquipo));
 		}
 		if(estadoContrato != null) {
-			predicates.add(cb.equal(equipoRoot.join("contratos")
-				.get("estadoContrato"), estadoContrato));
+			if ("Sin Contrato".equals(estadoContrato)) {
+				predicates.add(cb.isNull(equipoRoot.join("contratos", JoinType.LEFT).get("estadoContrato")));
+			} else {
+				predicates.add(cb.equal(equipoRoot.join("contratos", JoinType.LEFT).get("estadoContrato"), estadoContrato));
+			}
+
 		}
 		if(predicates.isEmpty()) {
 			query.select(equipoRoot);
