@@ -49,6 +49,11 @@ export class OrdenTrabajoService {
     return this.apiRequest.get(url);
   }
 
+  getAllOrdenTrabajoAtendidas(): Observable<OrdenTrabajo[]> {
+    const url = this.urlOrdenTrabajo + '/orden-atendida';
+    return this.apiRequest.get(url);
+  }
+
   getAllByTipoMantenimientoOrdenPendiente(tipo: string): Observable<OrdenTrabajo[]> {
     const url = this.urlOrdenTrabajo + '/orden-pendiente/by-Tipo/' + tipo;
     return this.apiRequest.get(url);

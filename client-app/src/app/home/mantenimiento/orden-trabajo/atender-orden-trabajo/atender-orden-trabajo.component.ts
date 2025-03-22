@@ -332,7 +332,7 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
   onSaveMantenimiento() {
 
     if(this.estadoOT == EstadoOrdenTrabajo.CANCELADO) {
-      if (this.solicitudRepuesto == null && this.solicitudRepuesto.estado == EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO) {
+      if (this.solicitudRepuesto != null && this.solicitudRepuesto.estado == EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO) {
         this.solicitudRepuesto.estado = EstadoSolicitudRepuesto.PENDIENTE;
         this.updateSolicitudRepuesto(this.solicitudRepuesto, true);
       }
@@ -341,16 +341,23 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
       this.updateOrdenTrabajo(this.ordenTrabajoActual);
 
     } else {
+      if (this.fechaRealizacion != null && (typeof this.fechaRealizacion === 'string' || this.fechaRealizacion instanceof String)) {
+        let parts = this.fechaRealizacion.split('-');
+        this.fechaRealizacion = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+      }
+
       this.verificarRepuestos();
 
       if ((this.tareaRealizada != undefined && this.tareaRealizada != '' ) && (this.nombreTecnico != undefined && this.nombreTecnico != '')) {
         this.servicioRealizado = new Mantenimiento(null, this.horasDeUso, this.tareaRealizada, this.codigoError, this.nombreTecnico,
           this.tipoServicio, this.equipoSeleccionado.estado, this.ordenTrabajoActual, this.fechaMantenimiento);
         this.saveMantenimiento(this.servicioRealizado);
+      } else {
+        this.updateOrdenTrabajo(this.ordenTrabajoActual);
       }
+      this.manteniminetoService.emitExisteOrdenTrabajoAtendida(true);
+      this.goListaDeTrabajosFinalizados();
     }
-    this.manteniminetoService.emitExisteOrdenTrabajoAtendida(true);
-    this.goListaDeTrabajosFinalizados();
   }
 
   verificarRepuestos(){
@@ -481,11 +488,11 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
         if (this.ordenTrabajo.estado === EstadoOrdenTrabajo.FINALIZADO) {
           this.ordenTrabajo.equipo.estado = EstadoEquipo.OPERATIVO;
           this.updateEquipo(this.ordenTrabajo.equipo);
-          if(this.ordenTrabajo.equipo.estado != this.estadoEquipo && this.estadoEquipo != undefined){
-            this.ordenTrabajo.equipo.estado = this.estadoEquipo;
-            this.updateEquipo(this.ordenTrabajo.equipo);
+        } else if( (this.estadoEquipo != undefined && this.equipoSeleccionado.estado != this.estadoEquipo &&
+          this.ordenTrabajo.estado != EstadoOrdenTrabajo.CANCELADO)){
+          this.ordenTrabajo.equipo.estado = this.estadoEquipo;
+          this.updateEquipo(this.ordenTrabajo.equipo);
         }
-    }
       },
       error => {
         this.errorMessage = error.error;

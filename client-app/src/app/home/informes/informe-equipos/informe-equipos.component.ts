@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Equipo, EquipoDTO} from "../../../domain/equipo";
+import {EquipoDTO} from "../../../domain/equipo";
 import {ParamsBusquedaEquipo} from "../../../domain/ParamsBusquedaEquipo";
 import {EquipoService} from "../../../service/equipo.service";
 import {DatePipe} from "@angular/common";
