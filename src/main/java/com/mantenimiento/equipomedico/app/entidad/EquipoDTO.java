@@ -2,6 +2,7 @@ package com.mantenimiento.equipomedico.app.entidad;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
 
 /**
  * EquipoDTO
@@ -17,7 +18,9 @@ public class EquipoDTO implements Serializable {
     private String numeroPatrimonial;
     private String estadoEquipo;
     private String descripcionEquipo;
-    private TipoEquipo tipoEquipo;
+    private Float costo;
+    private String versionSw;
+    private String tipoEquipo;
     private String representanteEquipo;
     private String marca;
     private String modelo;
@@ -27,6 +30,9 @@ public class EquipoDTO implements Serializable {
     private Long contratoId;
     private String estadoContrato;
     private Date fechaVenGarantia;
+    private String fechaFabricacion;
+    private Date fechaInstalacion;
+    private Date fechaCompra;
 
     public Long getIdEquipo() {
         return idEquipo;
@@ -68,11 +74,11 @@ public class EquipoDTO implements Serializable {
         this.descripcionEquipo = descripcionEquipo;
     }
 
-    public TipoEquipo getTipoEquipo() {
+    public String getTipoEquipo() {
         return tipoEquipo;
     }
 
-    public void setTipoEquipo(TipoEquipo tipoEquipo) {
+    public void setTipoEquipo(String tipoEquipo) {
         this.tipoEquipo = tipoEquipo;
     }
 
@@ -146,5 +152,55 @@ public class EquipoDTO implements Serializable {
 
     public void setFechaVenGarantia(Date fechaVenGarantia) {
         this.fechaVenGarantia = fechaVenGarantia;
+    }
+
+    public Float getCosto()
+    {
+        return costo;
+    }
+
+    public void setCosto(Float costo)
+    {
+        this.costo = costo;
+    }
+
+    public String getVersionSw()
+    {
+        return versionSw;
+    }
+
+    public void setVersionSw(String versionSw)
+    {
+        this.versionSw = versionSw;
+    }
+
+    public String getFechaFabricacion()
+    {
+        return fechaFabricacion;
+    }
+
+    public void setFechaFabricacion(String fechaFabricacion)
+    {
+        this.fechaFabricacion = fechaFabricacion;
+    }
+
+    public Date getFechaInstalacion()
+    {
+        return fechaInstalacion;
+    }
+
+    public void setFechaInstalacion(Date fechaInstalacion)
+    {
+        this.fechaInstalacion = fechaInstalacion;
+    }
+
+    public Date getFechaCompra()
+    {
+        return fechaCompra;
+    }
+
+    public void setFechaCompra(Date fechaCompra)
+    {
+        this.fechaCompra = fechaCompra;
     }
 }

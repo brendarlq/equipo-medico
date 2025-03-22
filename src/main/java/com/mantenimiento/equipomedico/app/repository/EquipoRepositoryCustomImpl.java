@@ -18,7 +18,7 @@ public class EquipoRepositoryCustomImpl implements EquipoRepositoryCustom
 
 	@Override
 	public List<Equipo> getEquiposByFilter(
-		String tipo, String marca, String modelo, String servicio, String estadoEquipo, String estadoContrato)
+		String tipo, String marca, String modelo, String bloque, String estadoEquipo, String estadoContrato)
 	{
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Equipo> query = cb.createQuery(Equipo.class);
@@ -34,8 +34,8 @@ public class EquipoRepositoryCustomImpl implements EquipoRepositoryCustom
 		if(modelo != null) {
 			predicates.add(cb.equal(equipoRoot.join("modelo").get("modelo"), modelo));
 		}
-		if(servicio != null) {
-			predicates.add(cb.equal(equipoRoot.join("ubicacion").get("servicio"), servicio));
+		if(bloque != null) {
+			predicates.add(cb.equal(equipoRoot.join("ubicacion").get("bloque"), bloque));
 		}
 		if(estadoEquipo != null) {
 			predicates.add(cb.equal(equipoRoot.get("estado"), estadoEquipo));

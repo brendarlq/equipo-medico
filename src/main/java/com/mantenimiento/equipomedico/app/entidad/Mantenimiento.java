@@ -33,9 +33,6 @@ public class Mantenimiento implements Serializable {
     @Column(name = "tarea_realizada")
     private String tareaRealizada;
 
-    @Column(name = "codigo_error")
-    private String CodigoError;
-
     @Column(name = "nombre_tecnico")
     private String nombreTecnico;
 
@@ -44,6 +41,9 @@ public class Mantenimiento implements Serializable {
 
     @Column(name = "estado")
     private String estadoEquipo;
+
+    @Column(name = "error")
+    private String error;
 
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "orden_trabajo_id")
@@ -193,13 +193,13 @@ public class Mantenimiento implements Serializable {
         this.horasDeUso = horasDeUso;
     }
 
-    public String getCodigoError()
+    public String getError()
     {
-        return CodigoError;
+        return error;
     }
 
-    public void setCodigoError(String codigoError)
+    public void setError(String error)
     {
-        CodigoError = codigoError;
+        this.error = error;
     }
 }

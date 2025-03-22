@@ -29,6 +29,8 @@ public interface EquipoService
 	 */
 	Equipo get(Long id);
 
+	EquipoDTO getEquipoDTO(Long id);
+
 	/**
 	 * Obtiene todos los equipos.
 	 *
@@ -57,7 +59,7 @@ public interface EquipoService
 	 * @param numeroPatrimonial
 	 * @return
 	 */
-	Equipo getByNumeroPatrimonialAndEstadoEquals(String numeroPatrimonial, String estado);
+	EquipoDTO getByNumeroPatrimonialAndEstadoEquals(String numeroPatrimonial, String estado);
 
 	/**
 	 * Obtiene el equipo mediante su numero de serie.
@@ -65,9 +67,9 @@ public interface EquipoService
 	 * @param numeroSerie
 	 * @return
 	 */
-	Equipo getByNumeroSerieEquals(String numeroSerie);
+	EquipoDTO getByNumeroSerieEquals(String numeroSerie);
 
-	Equipo getEquiposByNumeroSerieAndNumeroPatrimonialEquals(String numeroSerie, String numeroPatrimonial);
+	EquipoDTO getEquiposByNumeroSerieAndNumeroPatrimonialEquals(String numeroSerie, String numeroPatrimonial);
 
 	List<Equipo> getEquiposByNumeroSerieContains(String numeroSerie);
 
@@ -75,7 +77,7 @@ public interface EquipoService
 
 	List<Equipo> getEquiposByNumeroSerieContainsAndNumeroPatrimonialContains(String numeroSerie, String numeroPatrimonial);
 
-	List<Equipo> getEquiposByFilter(Map<String, String> customQuery);
+	List<EquipoDTO> getEquiposByFilter(Map<String, String> customQuery);
 
 	/**
 	 * Cambio de estado

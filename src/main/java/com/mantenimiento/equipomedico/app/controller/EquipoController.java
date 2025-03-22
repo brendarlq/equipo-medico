@@ -104,6 +104,17 @@ public class EquipoController
 			.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
+	@RequestMapping(value = "equipoDTO/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<EquipoDTO> getEquipoDTO(@PathVariable Long id)
+	{
+		EquipoDTO equipo = equipoService.getEquipoDTO(id);
+		return Optional.ofNullable(equipo)
+			.map(result -> new ResponseEntity<>(
+				result,
+				HttpStatus.OK))
+			.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+
 
 	/**
 	 * Obtiene determinado equipo por numero patrimonial
@@ -112,9 +123,9 @@ public class EquipoController
 	 * @return
 	 */
 	@RequestMapping(value = "/by-numero/patrimonial/{numeroPatrimonial}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Equipo> getByNumeroPatrimonial(@PathVariable String numeroPatrimonial)
+	public ResponseEntity<EquipoDTO> getByNumeroPatrimonial(@PathVariable String numeroPatrimonial)
 	{
-		Equipo equipo = equipoService.getByNumeroPatrimonialAndEstadoEquals(numeroPatrimonial, "Operativo");
+		EquipoDTO equipo = equipoService.getByNumeroPatrimonialAndEstadoEquals(numeroPatrimonial, "Operativo");
 		return Optional.ofNullable(equipo)
 			.map(result -> new ResponseEntity<>(
 				result,
@@ -130,9 +141,9 @@ public class EquipoController
 	 */
 	@RequestMapping(value = "/by-numero-serie/{numeroSerie}",
 		method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Equipo> getByNumeroSerie(@PathVariable String numeroSerie)
+	public ResponseEntity<EquipoDTO> getByNumeroSerie(@PathVariable String numeroSerie)
 	{
-		Equipo equipo = equipoService.getByNumeroSerieEquals(numeroSerie);
+		EquipoDTO equipo = equipoService.getByNumeroSerieEquals(numeroSerie);
 		return Optional.ofNullable(equipo)
 			.map(result -> new ResponseEntity<>(
 				result,
@@ -142,11 +153,11 @@ public class EquipoController
 
 	@RequestMapping(value = "/by-numero-serie/by-numero/patrimonial/{numeroSerie}/{numeroPatrimonial}",
 		method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Equipo> getByNumeroSerieAndNumeroPatrimonial(
+	public ResponseEntity<EquipoDTO> getByNumeroSerieAndNumeroPatrimonial(
 		@PathVariable String numeroSerie,
 		@PathVariable String numeroPatrimonial)
 	{
-		Equipo equipo = equipoService.getEquiposByNumeroSerieAndNumeroPatrimonialEquals(numeroSerie, numeroPatrimonial);
+		EquipoDTO equipo = equipoService.getEquiposByNumeroSerieAndNumeroPatrimonialEquals(numeroSerie, numeroPatrimonial);
 		return Optional.ofNullable(equipo)
 			.map(result -> new ResponseEntity<>(
 				result,
@@ -169,7 +180,7 @@ public class EquipoController
 
 	@RequestMapping(value = "/by-filter",
 		method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Equipo> getByFilter(
+	public List<EquipoDTO> getByFilter(
 		@RequestParam Map<String, String> customQuery)
 	{
 		return equipoService.getEquiposByFilter(customQuery);

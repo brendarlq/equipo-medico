@@ -44,6 +44,13 @@ public class EquipoServiceImpl implements EquipoService {
         return entity.orElse(null);
     }
 
+    @Override
+    public EquipoDTO getEquipoDTO(Long id)
+    {
+        Equipo equipo = get(id);
+        return transformEquipoDTO(equipo);
+    }
+
     /**
      * Obtiene todos los equipos.
      *
@@ -95,8 +102,9 @@ public class EquipoServiceImpl implements EquipoService {
      * @return
      */
     @Override
-    public Equipo getByNumeroPatrimonialAndEstadoEquals(String numeroPatrimonial, String estado) {
-        return equipoRepository.getEquipoByNumeroPatrimonialAndEstadoEquals(numeroPatrimonial, estado);
+    public EquipoDTO getByNumeroPatrimonialAndEstadoEquals(String numeroPatrimonial, String estado) {
+        Equipo result = equipoRepository.getEquipoByNumeroPatrimonialAndEstadoEquals(numeroPatrimonial, estado);
+        return transformEquipoDTO(result);
     }
 
     /**
@@ -106,14 +114,15 @@ public class EquipoServiceImpl implements EquipoService {
      * @return
      */
     @Override
-    public Equipo getByNumeroSerieEquals(String numeroSerie) {
-        return equipoRepository.getEquipoByNumeroSerieEquals(numeroSerie);
+    public EquipoDTO getByNumeroSerieEquals(String numeroSerie) {
+        Equipo result = equipoRepository.getEquipoByNumeroSerieEquals(numeroSerie);
+        return transformEquipoDTO(result);
     }
 
     @Override
-    public Equipo getEquiposByNumeroSerieAndNumeroPatrimonialEquals(
-            String numeroSerie, String numeroPatrimonial) {
-        return getEquiposByNumeroSerieAndNumeroPatrimonialEquals(numeroSerie, numeroPatrimonial);
+    public EquipoDTO getEquiposByNumeroSerieAndNumeroPatrimonialEquals(String numeroSerie, String numeroPatrimonial) {
+        Equipo result = equipoRepository.getEquiposByNumeroSerieAndNumeroPatrimonialEquals(numeroSerie, numeroPatrimonial);
+        return transformEquipoDTO(result);
     }
 
     @Override
@@ -134,12 +143,12 @@ public class EquipoServiceImpl implements EquipoService {
     }
 
     @Override
-    public List<Equipo> getEquiposByFilter(
-            Map<String, String> customQuery) {
+    public List<EquipoDTO> getEquiposByFilter(Map<String, String> customQuery) {
         String tipo = null;
         String marca = null;
         String modelo = null;
-        String servicio = null;
+        String bloque = null;
+
         String estadoEquipo = null;
         String estadoContrato = null;
         if (customQuery.containsKey("tipo")) {
@@ -154,8 +163,8 @@ public class EquipoServiceImpl implements EquipoService {
         if (customQuery.containsKey("modelo")) {
             modelo = customQuery.get("modelo");
         }
-        if (customQuery.containsKey("servicio")) {
-            servicio = customQuery.get("servicio");
+        if (customQuery.containsKey("bloque")) {
+            bloque = customQuery.get("bloque");
         }
         if (customQuery.containsKey("estadoEquipo")) {
             estadoEquipo = customQuery.get("estadoEquipo");
@@ -164,7 +173,8 @@ public class EquipoServiceImpl implements EquipoService {
             estadoContrato = customQuery.get("estadoContrato");
         }
 
-        return equipoRepository.getEquiposByFilter(tipo, marca, modelo, servicio, estadoEquipo, estadoContrato);
+        List<Equipo> equipos = equipoRepository.getEquiposByFilter(tipo, marca, modelo, bloque, estadoEquipo, estadoContrato);
+        return transformEquipoDTO(equipos);
     }
 
     @Override
@@ -244,24 +254,30 @@ public class EquipoServiceImpl implements EquipoService {
     public List<EquipoDTO> transformEquipoDTO(List<Equipo> equipoList) {
         List<EquipoDTO> equipoDTOList = new ArrayList<>();
         for (Equipo equipo : equipoList) {
-            EquipoDTO equipoDTO = new EquipoDTO();
-            equipoDTO.setIdEquipo(equipo.getId());
-            equipoDTO.setNumeroSerie(equipo.getNumeroSerie());
-            equipoDTO.setNumeroPatrimonial(equipo.getNumeroPatrimonial());
-            equipoDTO.setEstadoEquipo(equipo.getEstado());
-            equipoDTO.setDescripcionEquipo(equipo.getDescripcionEquipo());
-            equipoDTO.setTipoEquipo(equipo.getTipoEquipo());
-            equipoDTO.setMarca(equipo.getMarca().getMarca());
-            equipoDTO.setModelo(equipo.getModelo().getModelo());
-            equipoDTO.setRepresentanteEquipo(equipo.getRepresentante().getNombre());
-            equipoDTO.setBloque(equipo.getUbicacion().getBloque());
-            equipoDTO.setNumeroSala(equipo.getUbicacion().getNumeroSala());
-            equipoDTO.setNivel(equipo.getUbicacion().getNivel());
-            equipoDTO.setContratoId(equipo.getContratos().get(0).getId());
-            equipoDTO.setEstadoContrato(equipo.getContratos().get(0).getEstadoContrato());
-            equipoDTO.setFechaVenGarantia(equipo.getFechaVenGarantia());
-            equipoDTOList.add(equipoDTO);
+            equipoDTOList.add(transformEquipoDTO(equipo));
         }
         return equipoDTOList;
+    }
+
+    public EquipoDTO transformEquipoDTO(Equipo equipo) {
+        EquipoDTO equipoDTO = new EquipoDTO();
+        equipoDTO.setIdEquipo(equipo.getId());
+        equipoDTO.setNumeroSerie(equipo.getNumeroSerie());
+        equipoDTO.setNumeroPatrimonial(equipo.getNumeroPatrimonial());
+        equipoDTO.setEstadoEquipo(equipo.getEstado());
+        equipoDTO.setDescripcionEquipo(equipo.getDescripcionEquipo());
+        equipoDTO.setTipoEquipo(equipo.getTipoEquipo()!= null?equipo.getTipoEquipo().getTipo():"");
+        equipoDTO.setMarca(equipo.getMarca() != null?equipo.getMarca().getMarca():"");
+        equipoDTO.setModelo(equipo.getModelo() != null?equipo.getModelo().getModelo():"");
+        equipoDTO.setRepresentanteEquipo(equipo.getRepresentante() != null?equipo.getRepresentante().getNombre():"");
+        equipoDTO.setBloque(equipo.getUbicacion()!= null?equipo.getUbicacion().getBloque():"");
+        equipoDTO.setNumeroSala(equipo.getUbicacion()!= null?equipo.getUbicacion().getNumeroSala():"");
+        equipoDTO.setNivel(equipo.getUbicacion()!= null?equipo.getUbicacion().getNivel():"");
+        if(equipo.getContratos()!= null && equipo.getContratos().size() > 0) {
+            equipoDTO.setContratoId(equipo.getContratos().get(0).getId());
+            equipoDTO.setEstadoContrato(equipo.getContratos().get(0).getEstadoContrato());
+        }
+        equipoDTO.setFechaVenGarantia(equipo.getFechaVenGarantia());
+        return equipoDTO;
     }
 }
