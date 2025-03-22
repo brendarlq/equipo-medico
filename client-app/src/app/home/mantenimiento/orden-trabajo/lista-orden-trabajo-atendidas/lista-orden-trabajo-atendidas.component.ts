@@ -3,6 +3,8 @@ import {OrdenTrabajo, TipoServicio} from "../../../../domain/orden-trabajo";
 import {Router} from "@angular/router";
 import {OrdenTrabajoService} from "../../../../service/orden-trabajo.service";
 import {DatePipe} from "@angular/common";
+import {Equipo} from "../../../../domain/equipo";
+import {EquipoService} from "../../../../service/equipo.service";
 
 @Component({
   selector: 'app-lista-orden-trabajo-atendidas',
@@ -30,9 +32,11 @@ export class ListaOrdenTrabajoAtendidasComponent implements OnInit {
   loading = true;
   total: number;
   ordenTrabajoList: OrdenTrabajo[];
+  equipo: Equipo;
 
   constructor(private router: Router,
-              private ordenTrabajoService: OrdenTrabajoService) {
+              private ordenTrabajoService: OrdenTrabajoService,
+              private equipoService: EquipoService) {
   }
 
   ngOnInit() {
@@ -68,9 +72,8 @@ export class ListaOrdenTrabajoAtendidasComponent implements OnInit {
     this.ordenTrabajoService.getAllOrdenTrabajoAtendidas().subscribe(
       list => {
         this.ordenTrabajoList = list;
-        if (this.ordenTrabajoList.length == 0) {
-          this.getAllOrdenTrabajoAtendidasEnProceso();
-        } else if (this.ordenTrabajoList.length > 0){
+        if (this.ordenTrabajoList.length > 0) {
+          this.verificarEquipos();
           this.formateoFechas();
           this.total = list.length;
           this.loading = false;
@@ -86,19 +89,27 @@ export class ListaOrdenTrabajoAtendidasComponent implements OnInit {
     );
   }
 
-  getAllOrdenTrabajoAtendidasEnProceso(): void {
-    this.ordenTrabajoService.getAllByEstado("En Proceso").subscribe(
-      list => {
-        this.ordenTrabajoList = list;
-        if (this.ordenTrabajoList.length > 0) {
-            this.formateoFechas();
-            this.total = list.length;
-            this.loading = false;
-        }
+  verificarEquipos(): void {
+    for (let i = 0; i < this.ordenTrabajoList.length; i++) {
+      if (this.ordenTrabajoList[i].equipo != null && (typeof this.ordenTrabajoList[i].equipo === 'number' || this.ordenTrabajoList[i].equipo  instanceof Number)) {
+        console.log(this.ordenTrabajoList[i].equipo);
+        console.log(this.ordenTrabajoList[i].equipo.id);
+        var quipoId = this.ordenTrabajoList[i].equipo;
+        console.log(quipoId);
+        this.obtenerDatosEquipo(this.ordenTrabajoList[i],quipoId);
+      }
+    }
+  }
+
+  obtenerDatosEquipo(orden: OrdenTrabajo,quipoId: any){
+    this.equipoService.getEquipoById(quipoId).subscribe(
+      equipo => {
+        orden.equipo = equipo;
       },
       error => {
-        this.errorMessage = error.error;
-        console.log(this.errorMessage)
+        this.errorMessage = "Error al obtener el equipo seleccionado";
+        console.log(error.error + error.message)
+        this.error = true;
       }
     );
   }
