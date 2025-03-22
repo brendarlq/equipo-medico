@@ -22,7 +22,7 @@
                 (change)="onSelectUbicacion()">
           <option>Filtrar por Ubicacion</option>
           <option *ngFor="let ubicacion of ubicaciones"
-                  value={{ubicacion.id}}>{{ubicacion.servicio}}
+                  value={{ubicacion.id}}>{{ubicacion.bloque}}
           </option>
         </select>
       </div>
@@ -40,7 +40,7 @@
       </div>
     </div>
     <br/>
-    <!--      marca/modelo-->
+    <!--marca/modelo-->
     <div>
       <label class="clr-col-1 clr-align-self-end form-filter-label">Marca:</label>
       <div class="clr-select-wrapper">
@@ -121,16 +121,15 @@
       </ng-template>
       <ng-template pTemplate="body" let-equipo>
         <tr [pSelectableRow]="equipo">
-          <td class="table-column text-left">{{equipo.tipoEquipo?.tipo}}</td>
-          <td class="table-column text-left">{{equipo.marca?.marca}}</td>
-          <td class="table-column text-left">{{equipo.modelo?.modelo}}</td>
+          <td class="table-column text-left">{{equipo.tipoEquipo}}</td>
+          <td class="table-column text-left">{{equipo.marca}}</td>
+          <td class="table-column text-left">{{equipo.modelo}}</td>
           <td class="table-column text-center">{{equipo.numeroSerie}}</td>
           <td class="table-column text-center">{{equipo.numeroPatrimonial}}</td>
-          <td class="table-column text-center">{{equipo.ubicacion? 'bloque:' + equipo.ubicacion.bloque : ""}}
-           {{equipo.ubicacion? ' sala:' + equipo.ubicacion.numeroSala  : ""}}
-            {{equipo.ubicacion? ' nivel:' + equipo.ubicacion.nivel: ""}}</td>
-          <td class="table-column text-center">{{equipo.estado}}</td>
-          <td class="table-column text-center">{{equipo.contratos[0]? equipo.contratos[0].estadoContrato: 'Sin contrato'}}</td>
+          <td class="table-column text-center">{{equipo? 'bloque:' + equipo.bloque : ""}}
+           {{equipo? ' sala:' + equipo.numeroSala  : ""}}{{equipo? ' nivel:' + equipo.nivel: ""}}</td>
+          <td class="table-column text-center">{{equipo.estadoEquipo}}</td>
+          <td class="table-column text-center">{{equipo.contratoId? equipo.estadoContrato: 'Sin contrato'}}</td>
         </tr>
       </ng-template>
     </p-table>

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Equipo} from "../../../domain/equipo";
+import {Equipo, EquipoDTO} from "../../../domain/equipo";
 import {ParamsBusquedaEquipo} from "../../../domain/ParamsBusquedaEquipo";
 import {EquipoService} from "../../../service/equipo.service";
 import {DatePipe} from "@angular/common";
@@ -17,7 +17,7 @@ import {MetricasDTO} from "../../../domain/metricas-dto";
 export class InformeEquiposComponent implements OnInit {
 
   // Datos Equipo
-  equipoSeleccionado: Equipo;
+  equipoSeleccionado: EquipoDTO;
   numeroSerie: string;
   numeroPatrimonial: string;
   requestEquipo: ParamsBusquedaEquipo;
@@ -129,8 +129,8 @@ export class InformeEquiposComponent implements OnInit {
       equipo => {
         this.equipoSeleccionado = equipo;
         this.camposEquipo(equipo);
-        this.buscarMantenimientoByEquipo(equipo.id);
-        this.buscarSolicitudRepuestosByEquipo(equipo.id);
+        this.buscarMantenimientoByEquipo(equipo.idEquipo);
+        this.buscarSolicitudRepuestosByEquipo(equipo.idEquipo);
         this.error = false;
       },
       error => {
@@ -167,7 +167,7 @@ export class InformeEquiposComponent implements OnInit {
   }
 
   buscarMetricasByEquipoAndFechas(){
-    this.equipoService.getMetricasByEquipoAndFechas(this.equipoSeleccionado.id, this.fechaIniMetrica, this.fechaFinMetrica).subscribe(
+    this.equipoService.getMetricasByEquipoAndFechas(this.equipoSeleccionado.idEquipo, this.fechaIniMetrica, this.fechaFinMetrica).subscribe(
       result => {
         this.metricasDTO = result;
         console.log(this.metricasDTO)
@@ -238,10 +238,10 @@ export class InformeEquiposComponent implements OnInit {
         this.errorServiciosMessage = "La fecha final no puede ser mayor a la fecha inicial.";
         this.errorServicios = true;
       } else {
-        this.buscarMantenimientoByEquipoAndRangoFechas(this.equipoSeleccionado.id, fehcaIni, fechaFin);
+        this.buscarMantenimientoByEquipoAndRangoFechas(this.equipoSeleccionado.idEquipo, fehcaIni, fechaFin);
       }
     } else {
-      this.buscarMantenimientoByEquipo(this.equipoSeleccionado.id);
+      this.buscarMantenimientoByEquipo(this.equipoSeleccionado.idEquipo);
     }
   }
 
@@ -306,10 +306,10 @@ export class InformeEquiposComponent implements OnInit {
         this.errorRepuestosMessage = "La fecha final no puede ser mayor a la fecha inicial.";
         this.errorRepuestos = true;
       } else {
-        this.buscarSolicitudRepuestosByEquipoAndRangoFechas(this.equipoSeleccionado.id, fehcaIniRe, fechaFinRe);
+        this.buscarSolicitudRepuestosByEquipoAndRangoFechas(this.equipoSeleccionado.idEquipo, fehcaIniRe, fechaFinRe);
       }
     } else {
-      this.buscarSolicitudRepuestosByEquipo(this.equipoSeleccionado.id);
+      this.buscarSolicitudRepuestosByEquipo(this.equipoSeleccionado.idEquipo);
     }
   }
 
@@ -327,7 +327,7 @@ export class InformeEquiposComponent implements OnInit {
     }
   }
 
-  camposEquipo(equipo: Equipo) {
+  camposEquipo(equipo: EquipoDTO) {
     const datepipe: DatePipe = new DatePipe('en-ES');
     this.fechaFabricacion = equipo.fechaFabricacion;
     this.fechaVenGarantia = datepipe.transform(equipo.fechaVenGarantia, 'yyyy-MM-dd');

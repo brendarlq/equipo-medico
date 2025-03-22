@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {Equipo} from '../domain/equipo';
+import {Equipo, EquipoDTO} from '../domain/equipo';
 import {environment} from '../../environments/environment';
 import {ApiRequestService} from './api-request.service';
 import {ParamsBusquedaEquipo} from '../domain/ParamsBusquedaEquipo';
@@ -18,9 +18,9 @@ export class EquipoService {
 
   /**
    * Se obtienen todos los equipos.
-   * @returns {Observable<Equipo[]>}
+   * @returns {Observable<EquipoDTO[]>}
    */
-  getAllEquipos(): Observable<Equipo[]> {
+  getAllEquipos(): Observable<EquipoDTO[]> {
     // return this.apiRequest.get(this.urlEquipos);
     return this.apiRequest.get(this.urlEquipos + 'ultimo-contrato');
   }
@@ -44,11 +44,18 @@ export class EquipoService {
     return this.apiRequest.get(url);
   }
 
+  getEquipoDTOById(equipoId: number): Observable<EquipoDTO> {
+    const url = this.urlEquipos + 'equipoDTO/'+ equipoId;
+    return this.apiRequest.get(url);
+  }
+
+
+
   /**
    * Se busca un equipo deacuerdo a los parametros de busqueda enviados.
    * @param params
    */
-  getEquipoByParams(params: ParamsBusquedaEquipo): Observable<Equipo> {
+  getEquipoByParams(params: ParamsBusquedaEquipo): Observable<EquipoDTO> {
     let url = this.urlEquipos;
     let param = '';
     if(params.numeroSerie !== '' && params.numeroPatrimonial === '') {
@@ -67,7 +74,7 @@ export class EquipoService {
    * Se obtiene la lista de equipos filtrados
    * @param filtro
    */
-  getEquiposFiltrados(filtro: string): Observable<Equipo[]> {
+  getEquiposFiltrados(filtro: string): Observable<EquipoDTO[]> {
     const url = this.urlEquipos + 'by-filter?' + filtro;
     return this.apiRequest.get(url);
   }

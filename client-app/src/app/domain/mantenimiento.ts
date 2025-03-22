@@ -4,7 +4,7 @@ export class Mantenimiento {
   constructor(public id: number,
               public horasDeUso: number,
               public tareaRealizada: string,
-              public codigoError: string,
+              public error: string,
               public nombreTecnico: string,
               public tipoServicio: string,
               public estadoEquipo: string,

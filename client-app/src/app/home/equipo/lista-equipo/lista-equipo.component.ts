@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {EquipoService} from '../../../service/equipo.service';
-import {Equipo} from '../../../domain/equipo';
+import {EquipoDTO} from '../../../domain/equipo';
 import {Router} from '@angular/router';
 import {TipoEquipoService} from '../../../service/tipo-equipo.service';
 import {TipoEquipo} from '../../../domain/tipo-equipo';
@@ -21,7 +21,7 @@ import {ContratoService} from "../../../service/contrato.service";
 export class ListaEquipoComponent implements OnInit {
 
   // equipo
-  selectedEquipo: Equipo;
+  selectedEquipo: EquipoDTO;
   numeroSerie: string;
   numeroPatrimonial: string;
 
@@ -36,8 +36,8 @@ export class ListaEquipoComponent implements OnInit {
   total: number;
   first = 0;
   rows = 10;
-  equipos = new Array<Equipo>();
-  selected = new Array<Equipo>();
+  equipos = new Array<EquipoDTO>();
+  selected = new Array<EquipoDTO>();
 
   // filtro
   tipos = new Array<TipoEquipo>();
@@ -259,7 +259,7 @@ export class ListaEquipoComponent implements OnInit {
     this.selectedUbi = '';
     for (let i = 0; i < this.ubicaciones.length; i++) {
       if (this.ubicaciones[i].id == this.ubicacionId) {
-        this.selectedUbi = 'servicio=' + this.ubicaciones[i].servicio;
+        this.selectedUbi = 'bloque=' + this.ubicaciones[i].bloque;
         break;
       }
     }
@@ -293,6 +293,14 @@ export class ListaEquipoComponent implements OnInit {
     this.ubicacionId = 'Filtrar por Ubicacion';
     this.estadoEquipo = 'Filtrar por Estado Equipo';
     this.estadoContrato = 'Filtrar por Estado Contrato';
+    this.selectedTipo = '';
+    this.selectedMarca = '';
+    this.selectedModelo = '';
+    this.selectedUbi = '';
+    this.selectedEstadoEquipo = '';
+    this.selectedEstadoContrato = '';
+
+    this.filtrarEquipo();
   }
 
   /**
@@ -301,7 +309,7 @@ export class ListaEquipoComponent implements OnInit {
   filtrarEquipo(): void {
     this.info = false;
     this.infoMessage = '';
-    if (this.tipoId == 'Filtrar por Tipo' && this.modeloId == 'Filtrar por Marca/Modelo' &&
+    if (this.tipoId == 'Filtrar por Tipo' && this.modeloId == 'Filtrar por Modelo' && this.marcaId == 'Filtrar por Marca' &&
       this.ubicacionId == 'Filtrar por Ubicacion' && this.estadoEquipo == 'Filtrar por Estado Equipo' &&
       this.estadoContrato == 'Filtrar por Estado Contrato') {
       this.getAllEquipos();
@@ -410,7 +418,7 @@ export class ListaEquipoComponent implements OnInit {
    * Cuando se presiona el botón Edit.
    */
   editEquipo() {
-    this.router.navigate(['home/equipos/editar-equipo/' + this.selectedEquipo.id]);
+    this.router.navigate(['home/equipos/editar-equipo/' + this.selectedEquipo.idEquipo]);
 
   }
 

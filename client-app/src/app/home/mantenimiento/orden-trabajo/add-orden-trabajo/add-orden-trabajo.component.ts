@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Equipo} from '../../../../domain/equipo';
+import {Equipo, EquipoDTO} from '../../../../domain/equipo';
 import {ParamsBusquedaEquipo} from '../../../../domain/ParamsBusquedaEquipo';
 import {EquipoService} from '../../../../service/equipo.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -26,7 +26,7 @@ export class AddOrdenTrabajoComponent implements OnInit {
   tipoServicios: TipoServicio[];
 
   // Datos Equipo
-  equipoSeleccionado: Equipo;
+  equipoSeleccionado: EquipoDTO;
   numeroSerie: string;
   numeroPatrimonial: string;
   requestEquipo: ParamsBusquedaEquipo;
@@ -146,7 +146,7 @@ export class AddOrdenTrabajoComponent implements OnInit {
         this.equipoSeleccionado = equipo;
         this.numeroPatrimonial = equipo.numeroPatrimonial;
         this.numeroSerie = equipo.numeroSerie;
-        this.estadoInicialEquipo = equipo.estado;
+        this.estadoInicialEquipo = equipo.estadoEquipo;
         this.selectedEquipo = this.equipoSeleccionado != null;
         this.equipoWarning = false;
         this.equipoSuccess = true;
@@ -184,14 +184,28 @@ export class AddOrdenTrabajoComponent implements OnInit {
       }
 
       this.ordenTrabajo = new OrdenTrabajo(null, this.estadoOT, this.tipoServicio, this.diagnostico, this.responsable,
-        this.equipoSeleccionado, null, null, this.fechaRealizacion);
-      this.saveOrdenTrabajo(this.ordenTrabajo);
+        null, null, null, this.fechaRealizacion);
+      this.obtenerEquipoSeleccionado();
     } else {
       this.errorMessage = "Debe agregar un equipo a la orden";
       this.error = true;
     }
   }
 
+
+  obtenerEquipoSeleccionado(){
+    this.equipoService.getEquipoById(this.equipoSeleccionado.idEquipo).subscribe(
+      equipo => {
+        this.ordenTrabajo.equipo = equipo;
+        this.saveOrdenTrabajo(this.ordenTrabajo);
+      },
+      error => {
+        this.errorMessage = "Error al obtener el equipo seleccionado";
+        console.log(error.error + error.message)
+        this.error = true;
+      }
+    );
+  }
 
 
   /**

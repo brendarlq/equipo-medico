@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {OrdenTrabajo, TipoServicio} from '../../../../domain/orden-trabajo';
-import {Equipo} from '../../../../domain/equipo';
+import {Equipo, EquipoDTO} from '../../../../domain/equipo';
 import {ParamsBusquedaEquipo} from '../../../../domain/ParamsBusquedaEquipo';
 
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
@@ -32,9 +32,10 @@ export class EditOrdenTrabajoComponent implements OnInit {
 
   // Datos Equipo
   equipoSeleccionado: Equipo;
+  equipoDTO: EquipoDTO;
   numeroSerie: string;
   numeroPatrimonial: string;
-  estadoInicialEquipo:string;
+  estadoEquipo:string;
   requestEquipo: ParamsBusquedaEquipo;
   selectedEquipo: boolean;
   selectedEquipoActualizada = false;
@@ -106,11 +107,29 @@ export class EditOrdenTrabajoComponent implements OnInit {
       this.fechaRealizacion = datepipe.transform(orden.fechaSolicitud, 'yyyy-MM-dd');
     }
     this.equipoSeleccionado = orden.equipo;
-    this.equipoSeleccionado.fechaVenGarantia = datepipe.transform(this.equipoSeleccionado.fechaVenGarantia, 'dd-MM-yyyy');
-    this.numeroPatrimonial = this.equipoSeleccionado.numeroPatrimonial;
-    this.numeroSerie = this.equipoSeleccionado.numeroPatrimonial;
-    this.estadoInicialEquipo = this.equipoSeleccionado.estado;
-    this.selectedEquipo = true;
+    if(this.equipoSeleccionado != null ) {
+      this.numeroPatrimonial = this.equipoSeleccionado.numeroPatrimonial;
+      this.numeroSerie = this.equipoSeleccionado.numeroPatrimonial;
+      this.estadoEquipo = this.equipoSeleccionado.estado;
+      this.selectedEquipo = true;
+      this.getEquipoDTO();
+    }
+
+  }
+
+  getEquipoDTO(){
+    const datepipe: DatePipe = new DatePipe('en-ES');
+    this.equipoService.getEquipoDTOById(this.equipoSeleccionado.id).subscribe(
+      equipo => {
+        this.equipoDTO = equipo;
+        this.equipoDTO.fechaVenGarantia = datepipe.transform(this.equipoDTO.fechaVenGarantia, 'dd-MM-yyyy');
+      },
+      error => {
+        this.errorMessage = "Error al tratar de obtener el equipo";
+        console.log(this.errorMessage);
+        this.error = true;
+      }
+    );
   }
 
   /**
@@ -169,17 +188,20 @@ export class EditOrdenTrabajoComponent implements OnInit {
    * @param nroPatrimonial
    */
   buscarEquipo(nroSerie: string, nroPatrimonial: string): void {
+    const datepipe: DatePipe = new DatePipe('en-ES');
     this.requestEquipo = new ParamsBusquedaEquipo(nroSerie, nroPatrimonial);
     this.equipoService.getEquipoByParams(this.requestEquipo).subscribe(
       equipo => {
-        this.equipoSeleccionado = equipo;
+        this.equipoDTO = equipo;
+        this.equipoDTO.fechaVenGarantia = datepipe.transform(this.equipoDTO.fechaVenGarantia, 'dd-MM-yyyy');
         this.numeroPatrimonial = equipo.numeroPatrimonial;
         this.numeroSerie = equipo.numeroSerie;
-        this.selectedEquipo = this.equipoSeleccionado != null;
-        this.estadoInicialEquipo = equipo.estado;
+        this.selectedEquipo = this.equipoDTO != null;
+        this.estadoEquipo = equipo.estadoEquipo;
         this.equipoWarning = false;
         this.equipoSuccess = true;
         this.selectedEquipoActualizada = true;
+
       },
       error => {
         this.equipoWarningMessage = "No se encontraron registros para esta busqueda.";
@@ -201,7 +223,6 @@ export class EditOrdenTrabajoComponent implements OnInit {
    */
   clearDatosEquipos() {
     this.equipoSeleccionado = null;
-    this.estadoInicialEquipo = "";
     this.onKeyNroSerie('');
     this.onKeyNroPatrimonial('');
     this.selectedEquipo = false;
@@ -212,20 +233,30 @@ export class EditOrdenTrabajoComponent implements OnInit {
    * Cuando se guarda la información introducida.
    */
   onSaveAddOrdenTrabajo() {
-    if (this.fechaRealizacion != null && (typeof this.fechaRealizacion === 'string' || this.fechaRealizacion instanceof String)) {
-      let parts = this.fechaRealizacion.split('-');
-      this.fechaRealizacion = new Date(+parts[0], +parts[1] - 1, +parts[2]);
-    }
-
-    if (this.equipoSeleccionado.fechaVenGarantia != null && (typeof this.equipoSeleccionado.fechaVenGarantia === 'string'
-      || this.equipoSeleccionado.fechaVenGarantia instanceof String)) {
-      let parts = this.equipoSeleccionado.fechaVenGarantia.split('-');
-      this.equipoSeleccionado.fechaVenGarantia = new Date(+parts[0], +parts[1] - 1, +parts[2]);
-    }
-
     this.ordenTrabajo = new OrdenTrabajo(this.id, this.estadoOT, this.tipoServicio, this.diagnostico, this.responsable,
       this.equipoSeleccionado, null, null, this.fechaRealizacion);
+
+    if(this.equipoSeleccionado == null) {
+      this.obtenerEquipoSeleccionado();
+    } else {
       this.saveOrdenTrabajo(this.ordenTrabajo);
+    }
+
+  }
+
+  obtenerEquipoSeleccionado(){
+    this.equipoService.getEquipoById(this.equipoDTO.idEquipo).subscribe(
+      equipo => {
+        this.ordenTrabajo.equipo = equipo;
+        this.equipoSeleccionado = equipo;
+        this.saveOrdenTrabajo(this.ordenTrabajo);
+      },
+      error => {
+        this.errorMessage = "Error al obtener el equipo seleccionado";
+        console.log(error.error + error.message)
+        this.error = true;
+      }
+    );
   }
 
   /**
@@ -237,15 +268,13 @@ export class EditOrdenTrabajoComponent implements OnInit {
       orden => {
         this.ordenTrabajo = orden;
         console.log(this.ordenTrabajo);
-        console.log(this.estadoInicialEquipo);
-        if (this.ordenTrabajo.equipo != null &&
-          ((this.selectedEquipoActualizada && this.ordenTrabajo.equipo.estado != this.equipoSeleccionado.estado) ||
-            this.ordenTrabajo.equipo.estado != this.equipoSeleccionado.estado)) {
-          this.updateEquipo(this.equipoSeleccionado, false);
-        } else {
-          this.goBack();
+        console.log(this.estadoEquipo);
+        if (orden.equipo.estado != this.estadoEquipo) {
+          orden.equipo.estado = this.estadoEquipo;
+          this.updateEquipo(orden.equipo, false);
         }
         this.limpiarCampos();
+        this.goBack();
       },
       error => {
         this.errorMessage = error.error;
@@ -277,7 +306,6 @@ export class EditOrdenTrabajoComponent implements OnInit {
       // tslint:disable-next-line:no-shadowed-variable
       respuesta => {
         console.log(respuesta);
-        this.goBack();
       },
       error => {
         this.errorMessage = error.error;

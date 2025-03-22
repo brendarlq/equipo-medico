@@ -36,6 +36,8 @@ export class EquipoDTO {
               public numeroPatrimonial: string,
               public estadoEquipo: string,
               public descripcionEquipo: string,
+              public costo: number,
+              public versionSw: string,
               public tipoEquipo: string,
               public modelo: string,
               public marca: string,
@@ -45,6 +47,9 @@ export class EquipoDTO {
               public nivel: string,
               public contratoId: number,
               public estadoContrato: string,
-              public fechaVenGarantia?: any) {
+              public fechaFabricacion?: any,
+              public fechaVenGarantia?: any,
+              public fechaInstalacion?: any,
+              public fechaCompra?: any) {
   }
 }

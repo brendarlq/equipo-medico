@@ -49,20 +49,6 @@
           </div>
         </div>
       </div>
-      <!--número patrimonial-->
-<!--      <div class="clr-col-4">-->
-<!--        <div class="clr-form-control">-->
-<!--          <label class="tamanho-total clr-col-5 label-input">N. Patrimonial</label>-->
-<!--          <div class="clr-control-container">-->
-<!--            <div class="clr-input-wrapper">-->
-<!--              <input type="text" class="clr-input" id="numeroPatrimonial" name="numeroPatrimonial" #nroPatrimonial-->
-<!--                     (keyup.enter)="onEnterNroPatrimonial(nroPatrimonial.value)"-->
-<!--                     (keyup)="onKeyNroPatrimonial(nroPatrimonial.value)"-->
-<!--                     [(ngModel)]="numeroPatrimonial"/>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
 
       <a class="btn btn-outline content-no-print btn-print"
          (click)="limpiarCamposInfo()">
@@ -83,15 +69,15 @@
         <tbody>
         <tr>
           <th class="column-width">Tipo:</th>
-          <td>{{equipoSeleccionado?.tipoEquipo?.tipo}}</td>
+          <td>{{equipoSeleccionado?.tipoEquipo}}</td>
         </tr>
         <tr>
           <th class="column-width">Marca:</th>
-          <td>{{equipoSeleccionado?.marca?.marca}}</td>
+          <td>{{equipoSeleccionado?.marca}}</td>
         </tr>
         <tr>
           <th class="column-width">Modelo:</th>
-          <td>{{equipoSeleccionado?.modelo?.modelo}}</td>
+          <td>{{equipoSeleccionado?.modelo}}</td>
         </tr>
         <tr>
           <th class="column-width">Nro. Serie:</th>
@@ -99,7 +85,7 @@
         </tr>
         <tr>
           <th class="column-width">Estado Contrato:</th>
-          <td>{{equipoSeleccionado.contratos[0]? equipoSeleccionado.contratos[0].estadoContrato: 'Sin contrato'}}</td>
+          <td>{{equipoSeleccionado?.contratoId? equipoSeleccionado.estadoContrato: 'Sin contrato'}}</td>
         </tr>
         </tbody>
       </table>
@@ -113,8 +99,7 @@
         </tr>
         <tr>
           <th class="column-width">Ubicacion:</th>
-          <td>{{equipoSeleccionado?.ubicacion?.servicio}} {{equipoSeleccionado?.ubicacion?.bloque}}
-            {{equipoSeleccionado?.ubicacion?.numeroSala}} {{equipoSeleccionado?.ubicacion?.nivel}}</td>
+          <td>{{equipoSeleccionado?.bloque}}{{equipoSeleccionado?.numeroSala}} {{equipoSeleccionado?.nivel}}</td>
         </tr>
         <tr>
           <th class="column-width">Puesta en Marcha:</th>
@@ -122,7 +107,7 @@
         </tr>
         <tr>
           <th class="column-width">Estado del Equipo:</th>
-          <td>{{equipoSeleccionado?.estado}}</td>
+          <td>{{equipoSeleccionado?.estadoEquipo}}</td>
         </tr>
         </tbody>
       </table>

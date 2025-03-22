@@ -94,22 +94,20 @@
       <th class=" table-header">Ubicación</th>
       <th class=" table-header">Representante</th>
       <th class=" table-header">Fecha de Vto. de Garantía</th>
-      <th class=" table-header left">Contrato Nro</th>
+      <th class=" table-header left">Estado del Contrato</th>
     </tr>
     </thead>
     <tbody>
     <tr>
-      <td class="table-column left">{{equipoSeleccionado?.tipoEquipo?.tipo}}</td>
-      <td class="table-column">{{equipoSeleccionado?.marca?.marca}}</td>
-      <td class="table-column">{{equipoSeleccionado?.modelo?.modelo}}</td>
+      <td class="table-column left">{{equipoSeleccionado?.tipoEquipo}}</td>
+      <td class="table-column">{{equipoSeleccionado?.marca}}</td>
+      <td class="table-column">{{equipoSeleccionado?.modelo}}</td>
       <td class="table-column">{{equipoSeleccionado?.descripcionEquipo}}</td>
       <td
-        class="table-column">{{ equipoSeleccionado?.ubicacion?.bloque ? equipoSeleccionado?.ubicacion?.bloque + ' ' : ''  }}
-        {{equipoSeleccionado?.ubicacion?.nivel ? equipoSeleccionado?.ubicacion?.nivel + ' ' : '' }}
-        {{equipoSeleccionado?.ubicacion?.numeroSala ? equipoSeleccionado?.ubicacion?.numeroSala + ' ' : '' }}</td>
-      <td class="table-column">{{equipoSeleccionado?.representante.nombre}}</td>
+        class="table-column">{{ equipoSeleccionado?.bloque + ' '}}{{equipoSeleccionado?.nivel + ' '}}{{equipoSeleccionado?.numeroSala + ' '}}</td>
+      <td class="table-column">{{equipoSeleccionado?.representanteEquipo}}</td>
       <td class="table-column">{{equipoSeleccionado?.fechaVenGarantia}}</td>
-      <td class="table-column text-center">{{equipoSeleccionado.contratos? equipoSeleccionado.contratos[0].numeroContrato: 'Sin contrato'}}</td>
+      <td class="table-column text-center">{{equipoSeleccionado?.contratoId? equipoSeleccionado.estadoContrato: 'Sin contrato'}}</td>
     </tr>
     </tbody>
   </table>
@@ -155,7 +153,7 @@
   <div class="clr-col-3"  *ngIf="selectedEquipo">
     <clr-select-container>
       <label>Estado</label>
-      <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estado">
+      <select clrSelect name="estado" [(ngModel)]="equipoSeleccionado.estadoEquipo">
         <option value="Operativo">Operativo</option>
         <option value="Inoperativo">Inoperativo</option>
         <option value="Irreparable">Irreparable</option>

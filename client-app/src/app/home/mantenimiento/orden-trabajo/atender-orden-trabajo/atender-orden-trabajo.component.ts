@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {EstadoOrdenTrabajoLista, OrdenTrabajo, TipoServicio} from '../../../../domain/orden-trabajo';
-import {Equipo} from '../../../../domain/equipo';
+import {Equipo, EquipoDTO} from '../../../../domain/equipo';
 import {EstadoSolicitud, SolicitudRepuesto} from '../../../../domain/solicitud-repuesto';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {OrdenTrabajoService} from '../../../../service/orden-trabajo.service';
@@ -25,6 +25,7 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
 
   // orden trabajo
   ordenTrabajo: OrdenTrabajo;
+  ordenTrabajoActual: OrdenTrabajo;
   id: number;
   estadoOT: string;
   tipoServicio: string;
@@ -32,6 +33,7 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
   responsable: string;
   fechaRealizacion: any;
   equipoSeleccionado: Equipo;
+  equipoDTO: EquipoDTO;
   estadoEquipo: string;
   estados: EstadoOrdenTrabajoLista[];
 
@@ -91,6 +93,7 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
       .pipe(
         switchMap((params: ParamMap) => this.ordenTrabajoService.getOrdenTrabajoById(+params.get('id')))
       ).subscribe(orden => {
+        this.ordenTrabajoActual = orden;
         this.ordenTrabajo = new OrdenTrabajo(orden.id, orden.estado, orden.tipoServicio, orden.diagnostico,
           orden.responsable, orden.equipo, orden.solicitudRepuesto, orden.mantenimientos, orden.fechaSolicitud);
         this.camposAEditar(this.ordenTrabajo);
@@ -163,7 +166,6 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
     }
     this.equipoSeleccionado = orden.equipo;
     this.estadoEquipo = this.equipoSeleccionado.estado;
-    this.equipoSeleccionado.fechaVenGarantia = datepipe.transform(this.equipoSeleccionado.fechaVenGarantia, 'dd-MM-yyyy');
     this.solicitudRepuesto = orden.solicitudRepuesto;
     if (this.solicitudRepuesto != null) {
       this.solicitudRepuestoDetalles = this.solicitudRepuesto.solicitudRepuestoDetalles;
@@ -171,6 +173,8 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
       console.log(this.solicitudRepuestoDetalles);
       console.log(this.solicitudRepuestoDetalles[0].repuesto);
     }
+
+    this.getEquipoDTO();
   }
 
   /**
@@ -189,6 +193,21 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
       this.detalleSeleccionado = null;
       this.solicitudRepuestoDetalles = [];
     }
+  }
+
+  getEquipoDTO(){
+    const datepipe: DatePipe = new DatePipe('en-ES');
+    this.equipoService.getEquipoDTOById(this.equipoSeleccionado.id).subscribe(
+      equipo => {
+        this.equipoDTO = equipo;
+        this.equipoDTO.fechaVenGarantia = datepipe.transform(this.equipoDTO.fechaVenGarantia, 'dd-MM-yyyy');
+      },
+      error => {
+        this.errorMessage = "Error al tratar de obtener el equipo";
+        console.log(this.repErrorMessage);
+        this.error = true;
+      }
+    );
   }
 
   /**
@@ -312,29 +331,26 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
    */
   onSaveMantenimiento() {
 
-    if (this.equipoSeleccionado.fechaVenGarantia != null && (typeof this.equipoSeleccionado.fechaVenGarantia === 'string' || this.equipoSeleccionado.fechaVenGarantia instanceof String)) {
-      let parts = this.fechaRealizacion.split('-');
-      this.equipoSeleccionado.fechaVenGarantia = new Date(+parts[0], +parts[1] - 1, +parts[2]);
-    }
-
     if(this.estadoOT == EstadoOrdenTrabajo.CANCELADO) {
       if (this.solicitudRepuesto == null && this.solicitudRepuesto.estado == EstadoSolicitudRepuesto.PENDIENTE_EN_ORDEN_TRABAJO) {
         this.solicitudRepuesto.estado = EstadoSolicitudRepuesto.PENDIENTE;
         this.updateSolicitudRepuesto(this.solicitudRepuesto, true);
       }
-      this.ordenTrabajo.solicitudRepuesto = null;
-      this.ordenTrabajo.equipo = null;
-      this.updateOrdenTrabajo(this.ordenTrabajo);
+      this.ordenTrabajoActual.solicitudRepuesto = null;
+      this.ordenTrabajoActual.equipo = null;
+      this.updateOrdenTrabajo(this.ordenTrabajoActual);
 
     } else {
       this.verificarRepuestos();
 
       if ((this.tareaRealizada != undefined && this.tareaRealizada != '' ) && (this.nombreTecnico != undefined && this.nombreTecnico != '')) {
         this.servicioRealizado = new Mantenimiento(null, this.horasDeUso, this.tareaRealizada, this.codigoError, this.nombreTecnico,
-          this.ordenTrabajo.tipoServicio, this.equipoSeleccionado.estado, this.ordenTrabajo, this.fechaMantenimiento);
+          this.tipoServicio, this.equipoSeleccionado.estado, this.ordenTrabajoActual, this.fechaMantenimiento);
         this.saveMantenimiento(this.servicioRealizado);
       }
     }
+    this.manteniminetoService.emitExisteOrdenTrabajoAtendida(true);
+    this.goListaDeTrabajosFinalizados();
   }
 
   verificarRepuestos(){
@@ -343,7 +359,7 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
       this.esNuevaSolicitudRepuesto = true;
       this.solicitudRepuesto = new SolicitudRepuesto(null, this.solicitudRepuestoEstado,
         this.solicitudRepuestoDetalles, new Date());
-    } else if (this.solicitudRepId != null) {
+    } else if (this.solicitudRepId != null && this.solicitudRepId != "Seleccionar Solicitud ID") {
       // si se obtuvo una solicitud de repuesto buscando por su Id
       this.solicitudRepuesto.estado = this.solicitudRepuestoEstado;
       this.solicitudRepuesto.solicitudRepuestoDetalles = this.solicitudRepuestoDetalles;
@@ -354,10 +370,12 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
       this.eliminarDetallesdelaSolicitudRepuesto();
     }
 
-    if (this.esNuevaSolicitudRepuesto) {
-      this.saveSolicitudRepuesto(this.solicitudRepuesto);
-    } else {
-      this.updateSolicitudRepuesto(this.solicitudRepuesto, false);
+    if(this.solicitudRepuesto != null) {
+      if (this.esNuevaSolicitudRepuesto) {
+        this.saveSolicitudRepuesto(this.solicitudRepuesto);
+      } else {
+        this.updateSolicitudRepuesto(this.solicitudRepuesto, false);
+      }
     }
   }
 
@@ -389,8 +407,8 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
       // tslint:disable-next-line:no-shadowed-variable
       solicitud => {
         this.solicitudRepuesto = solicitud;
-        this.ordenTrabajo.solicitudRepuesto = this.solicitudRepuesto;
-        this.updateOrdenTrabajo(this.ordenTrabajo);
+        this.ordenTrabajoActual.solicitudRepuesto = this.solicitudRepuesto;
+        this.updateOrdenTrabajo(this.ordenTrabajoActual);
       },
       error => {
         this.errorMessage = error.error;
@@ -410,8 +428,8 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
       solicitud => {
         this.solicitudRepuesto = solicitud;
         if(!isOrdenCancelada) {
-          this.ordenTrabajo.solicitudRepuesto = this.solicitudRepuesto;
-          this.updateOrdenTrabajo(this.ordenTrabajo);
+          this.ordenTrabajoActual.solicitudRepuesto = this.solicitudRepuesto;
+          this.updateOrdenTrabajo(this.ordenTrabajoActual);
         }
 
       },
@@ -433,8 +451,8 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
         this.servicioRealizado = mantenimineto;
         this.servicioRealizadoList.push(this.servicioRealizado);
         this.manteniminetoService.emitExisteOrdenTrabajoAtendida(true);
-        this.ordenTrabajo.mantenimientos = this.servicioRealizadoList;
-        this.updateOrdenTrabajo(this.ordenTrabajo);
+        this.ordenTrabajoActual.mantenimientos = this.servicioRealizadoList;
+        this.updateOrdenTrabajo(this.ordenTrabajoActual);
       },
       error => {
         this.errorMessage = error.error;
@@ -456,7 +474,7 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
    * @param ordenTrabajo
    */
   updateOrdenTrabajo(ordenTrabajo: OrdenTrabajo) {
-    this.ordenTrabajo.estado = this.estadoOT;
+    ordenTrabajo.estado = this.estadoOT;
     this.ordenTrabajoService.editarOrdenTrabajo(ordenTrabajo).subscribe(
       orden => {
         this.ordenTrabajo = orden;
@@ -466,9 +484,6 @@ export class AtenderOrdenTrabajoComponent implements OnInit {
           if(this.ordenTrabajo.equipo.estado != this.estadoEquipo && this.estadoEquipo != undefined){
             this.ordenTrabajo.equipo.estado = this.estadoEquipo;
             this.updateEquipo(this.ordenTrabajo.equipo);
-          } else {
-          this.manteniminetoService.emitExisteOrdenTrabajoAtendida(true);
-          this.goListaDeTrabajosFinalizados();
         }
     }
       },

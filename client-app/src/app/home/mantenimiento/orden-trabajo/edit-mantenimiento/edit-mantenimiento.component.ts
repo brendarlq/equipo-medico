@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {EstadoOrdenTrabajoLista, OrdenTrabajo, TipoServicio} from "../../../../domain/orden-trabajo";
-import {Equipo} from "../../../../domain/equipo";
+import {Equipo, EquipoDTO} from "../../../../domain/equipo";
 import {EstadoSolicitud, SolicitudRepuesto} from "../../../../domain/solicitud-repuesto";
 import {Mantenimiento} from "../../../../domain/mantenimiento";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
@@ -32,6 +32,7 @@ export class EditMantenimientoComponent implements OnInit {
   responsable: string;
   fechaRealizacion: any;
   equipoSeleccionado: Equipo;
+  equipoDTO: EquipoDTO;
   estadoEquipo: string;
   estadosOT: EstadoOrdenTrabajoLista[];
 
@@ -184,7 +185,6 @@ export class EditMantenimientoComponent implements OnInit {
     }
     this.equipoSeleccionado = orden.equipo;
     this.estadoEquipo = this.equipoSeleccionado.estado;
-    this.equipoSeleccionado.fechaVenGarantia = datepipe.transform(this.equipoSeleccionado.fechaVenGarantia, 'dd-MM-yyyy');
     this.solicitudRepuesto = orden.solicitudRepuesto;
     if (this.solicitudRepuesto != null) {
       this.solicitudRepuestoDetalles = this.solicitudRepuesto.solicitudRepuestoDetalles;
@@ -200,6 +200,8 @@ export class EditMantenimientoComponent implements OnInit {
       this.solicitudRepuestoEstado = this.solicitudRepuesto.estado;
       this.solicitudRepuestoDetalles = this.solicitudRepuesto.solicitudRepuestoDetalles;
     }
+
+    this.getEquipoDTO();
   }
 
   formateoFechasServicio() {
@@ -207,6 +209,21 @@ export class EditMantenimientoComponent implements OnInit {
     for (let i = 0; i < this.servicioRealizadoList.length; i++) {
       this.servicioRealizadoList[i].fechaMantenimiento = datepipe.transform(this.servicioRealizadoList[i].fechaMantenimiento, 'dd-MM-yyyy');
     }
+  }
+
+  getEquipoDTO(){
+    const datepipe: DatePipe = new DatePipe('en-ES');
+    this.equipoService.getEquipoDTOById(this.equipoSeleccionado.id).subscribe(
+      equipo => {
+        this.equipoDTO = equipo;
+        this.equipoDTO.fechaVenGarantia = datepipe.transform(this.equipoDTO.fechaVenGarantia, 'dd-MM-yyyy');
+      },
+      error => {
+        this.errorMessage = "Error al tratar de obtener el equipo";
+        console.log(this.repErrorMessage);
+        this.error = true;
+      }
+    );
   }
 
   /**
@@ -309,13 +326,6 @@ export class EditMantenimientoComponent implements OnInit {
   }
 
   onSaveMantenimiento() {
-
-    if (this.equipoSeleccionado.fechaVenGarantia != null
-      && (typeof this.equipoSeleccionado.fechaVenGarantia === 'string' || this.equipoSeleccionado.fechaVenGarantia instanceof String)) {
-      let parts = this.fechaRealizacion.split('-');
-      this.equipoSeleccionado.fechaVenGarantia = new Date(+parts[0], +parts[1] - 1, +parts[2]);
-    }
-
     if (this.servicioRealizadoList !=null){
       for (let i = 0; i < this.servicioRealizadoList.length; i++) {
         if (this.servicioRealizadoList[i].fechaMantenimiento != null
@@ -352,7 +362,7 @@ export class EditMantenimientoComponent implements OnInit {
         this.esNuevaSolicitudRepuesto = true;
         this.solicitudRepuesto = new SolicitudRepuesto(null, this.solicitudRepuestoEstado,
           this.solicitudRepuestoDetalles, new Date());
-      } else if (this.solicitudRepId != null) {
+      } else if (this.solicitudRepId != null && this.solicitudRepId != "Seleccionar Solicitud ID") {
         // si se obtuvo una solicitud de repuesto buscando por su Id
         this.solicitudRepuesto.estado = this.solicitudRepuestoEstado;
         this.solicitudRepuesto.solicitudRepuestoDetalles = this.solicitudRepuestoDetalles;
@@ -363,10 +373,12 @@ export class EditMantenimientoComponent implements OnInit {
       this.eliminarDetallesdelaSolicitudRepuesto();
     }
 
-    if (this.esNuevaSolicitudRepuesto) {
-      this.saveSolicitudRepuesto(this.solicitudRepuesto);
-    } else {
-      this.updateSolicitudRepuesto(this.solicitudRepuesto, false);
+    if(this.solicitudRepuesto != null) {
+      if (this.esNuevaSolicitudRepuesto) {
+        this.saveSolicitudRepuesto(this.solicitudRepuesto);
+      } else {
+        this.updateSolicitudRepuesto(this.solicitudRepuesto, false);
+      }
     }
   }
 

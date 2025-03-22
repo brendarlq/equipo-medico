@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {EquipoService} from "../service/equipo.service";
-import {Equipo} from "../domain/equipo";
+import {Equipo, EquipoDTO} from "../domain/equipo";
 import {ContratoService} from "../service/contrato.service";
 import {Contrato} from "../domain/contrato";
 import {SolicitudRepuesto} from "../domain/solicitud-repuesto";
@@ -20,7 +20,7 @@ import {RepuestoService} from "../service/repuesto.service";
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  equipos: Equipo[];
+  equipos: EquipoDTO[];
   existenEquiposCreados: boolean;
 
   contratos: Contrato[];
