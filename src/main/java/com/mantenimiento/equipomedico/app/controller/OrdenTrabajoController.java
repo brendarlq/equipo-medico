@@ -72,6 +72,11 @@ public class OrdenTrabajoController
         return ordenTrabajoService.getAllByEstadoEquals(estado);
     }
 
+    @RequestMapping(value = "/orden-atendida",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<OrdenTrabajo> getAllOrdenAtendidas() {
+        return ordenTrabajoService.getAllOrdenAtendidas();
+    }
+
     @RequestMapping(value = "orden-pendiente/by-Tipo/{tipo}",
         method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<OrdenTrabajo> getAllByTipoMantenimientoOrdenPendiente(@PathVariable String tipo) {

@@ -38,7 +38,7 @@ public interface OrdenTrabajoService {
      * @return
      */
     List<OrdenTrabajo> getAll();
-
+    List<OrdenTrabajo> getAllOrdenAtendidas();
     List<OrdenTrabajo> getAllByEstadoEquals(String estado);
     List<OrdenTrabajo> getAllByTipoServicioEquals(String tipoServicio,String tipoOrdenTrabajoVista);
 

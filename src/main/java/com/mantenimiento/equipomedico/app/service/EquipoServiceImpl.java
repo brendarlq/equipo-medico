@@ -266,17 +266,26 @@ public class EquipoServiceImpl implements EquipoService {
         equipoDTO.setNumeroPatrimonial(equipo.getNumeroPatrimonial());
         equipoDTO.setEstadoEquipo(equipo.getEstado());
         equipoDTO.setDescripcionEquipo(equipo.getDescripcionEquipo());
+        equipoDTO.setCosto(equipo.getCosto());
+        equipoDTO.setVersionSw(equipo.getVersionSw());
+
         equipoDTO.setTipoEquipo(equipo.getTipoEquipo()!= null?equipo.getTipoEquipo().getTipo():"");
         equipoDTO.setMarca(equipo.getMarca() != null?equipo.getMarca().getMarca():"");
         equipoDTO.setModelo(equipo.getModelo() != null?equipo.getModelo().getModelo():"");
         equipoDTO.setRepresentanteEquipo(equipo.getRepresentante() != null?equipo.getRepresentante().getNombre():"");
-        equipoDTO.setBloque(equipo.getUbicacion()!= null?equipo.getUbicacion().getBloque():"");
-        equipoDTO.setNumeroSala(equipo.getUbicacion()!= null?equipo.getUbicacion().getNumeroSala():"");
-        equipoDTO.setNivel(equipo.getUbicacion()!= null?equipo.getUbicacion().getNivel():"");
+
+        if(equipo.getUbicacion()!= null) {
+            equipoDTO.setBloque(equipo.getUbicacion().getBloque());
+            equipoDTO.setNumeroSala(equipo.getUbicacion().getNumeroSala());
+            equipoDTO.setNivel(equipo.getUbicacion().getNivel());
+        }
         if(equipo.getContratos()!= null && equipo.getContratos().size() > 0) {
             equipoDTO.setContratoId(equipo.getContratos().get(0).getId());
             equipoDTO.setEstadoContrato(equipo.getContratos().get(0).getEstadoContrato());
         }
+        equipoDTO.setFechaCompra(equipo.getFechaCompra());
+        equipoDTO.setFechaFabricacion(equipo.getFechaFabricacion());
+        equipoDTO.setFechaInstalacion(equipo.getFechaInstalacion());
         equipoDTO.setFechaVenGarantia(equipo.getFechaVenGarantia());
         return equipoDTO;
     }

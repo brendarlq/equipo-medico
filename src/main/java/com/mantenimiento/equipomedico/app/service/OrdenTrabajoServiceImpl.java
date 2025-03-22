@@ -60,6 +60,12 @@ public class OrdenTrabajoServiceImpl implements OrdenTrabajoService {
     }
 
     @Override
+    public List<OrdenTrabajo> getAllOrdenAtendidas()
+    {
+        return ordenTrabajoRepository.getAllByEstadoBetweenOrderByIdDesc("En Proceso", "Finalizada");
+    }
+
+    @Override
     public List<OrdenTrabajo> getAllByEstadoEquals(String estado)
     {
         return ordenTrabajoRepository.getAllByEstadoEquals(estado);

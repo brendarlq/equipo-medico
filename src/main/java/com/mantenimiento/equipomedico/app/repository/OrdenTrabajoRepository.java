@@ -12,6 +12,7 @@ public interface OrdenTrabajoRepository extends CrudRepository<OrdenTrabajo, Lon
 	List<OrdenTrabajo> getAllByEstadoEquals(String estado);
 	List<OrdenTrabajo> getAllByTipoServicioAndEstadoEquals(String tipoServicio,String estado);
 	List<OrdenTrabajo> getAllByTipoServicioAndEstadoBetween(String tipoServicio,String estado1,String estado2);
+	List<OrdenTrabajo>  getAllByEstadoBetweenOrderByIdDesc(String estado1,String estado2);
 	List<OrdenTrabajo> getAllByEquipoId(Long id);
 
 }
