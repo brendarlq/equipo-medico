@@ -127,16 +127,22 @@ export class InformeEquiposComponent implements OnInit {
     this.requestEquipo = new ParamsBusquedaEquipo(nroSerie, nroPatrimonial);
     this.equipoService.getEquipoByParams(this.requestEquipo).subscribe(
       equipo => {
-        this.equipoSeleccionado = equipo;
-        this.camposEquipo(equipo);
-        this.buscarMantenimientoByEquipo(equipo.idEquipo);
-        this.buscarSolicitudRepuestosByEquipo(equipo.idEquipo);
-        this.error = false;
+        if(equipo.idEquipo != null) {
+          this.equipoSeleccionado = equipo;
+          this.camposEquipo(equipo);
+          this.buscarMantenimientoByEquipo(equipo.idEquipo);
+          this.buscarSolicitudRepuestosByEquipo(equipo.idEquipo);
+          this.error = false;
+        } else {
+          this.errorMessage = 'No existe el equipo buscado ';
+          this.error = true;
+        }
+
       },
       error => {
         this.errorMessage = error.error;
         console.log(this.errorMessage);
-        if (this.errorMessage == null && error.status == '404') {
+        if (error.status === 404) {
           let message = 'No existe el equipo buscado ';
           this.errorMessage = this.numeroSerie != ''? message + this.numeroSerie: message + this.numeroPatrimonial ;
           this.info = true;

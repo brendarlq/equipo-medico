@@ -3,6 +3,7 @@ import {Equipo} from "../../../domain/equipo";
 import {Contrato} from "../../../domain/contrato";
 import {ContratoService} from "../../../service/contrato.service";
 import {DatePipe} from "@angular/common";
+import {Repuesto} from "../../../domain/repuesto";
 
 @Component({
   selector: 'app-informe-contratos',
@@ -19,6 +20,9 @@ export class InformeContratosComponent implements OnInit {
 
   // Datos Equipo
   equipos: Equipo[];
+
+  // Repuestos
+  repuestos: Repuesto[];
 
   // Errors
   errorMessage: string;
@@ -57,6 +61,7 @@ export class InformeContratosComponent implements OnInit {
       contrato => {
         this.contrato = contrato;
         this.equipos = contrato.equipos;
+        this.repuestos = contrato.repuestos;
         const datepipe: DatePipe = new DatePipe('en-ES');
         this.fechaInicio = datepipe.transform(contrato.fechaInicio, 'yyyy-MM-dd');
         this.fechaFin = datepipe.transform(contrato.fechaFin, 'yyyy-MM-dd');
@@ -64,7 +69,7 @@ export class InformeContratosComponent implements OnInit {
       error => {
         this.errorMessage = error.error;
         console.log(this.errorMessage);
-        if (this.errorMessage == null && error.status === '404') {
+        if (error.status === 404) {
           this.errorMessage = 'No existe el contrato buscado ';
           this.info = true;
           this.limpiarCamposInfo();

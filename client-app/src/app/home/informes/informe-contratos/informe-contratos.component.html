@@ -133,4 +133,36 @@
     </tr>
     </tbody>
   </table>
+    <br/><br/>
+    <!--  lista repuestos-->
+
+    <h3 class="form-informe-sub-title">Lista de Repuestos</h3>
+    <table class="table table-compact">
+      <thead>
+      <tr>
+        <th class="left">Tipo</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Representante</th>
+        <th>Código</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Cantidad Adquirida</th>
+        <th class="left">Stock</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let repuesto of repuestos">
+        <td class="left">{{repuesto?.tipoEquipo?.tipo}}</td>
+        <td>{{repuesto?.marca?.marca}}</td>
+        <td>{{repuesto?.modelo?.modelo}}</td>
+        <td>{{repuesto?.representante?.nombre}}</td>
+        <td>{{repuesto?.codigo}}</td>
+        <td>{{repuesto?.descripcionArticulo}}</td>
+        <td>{{repuesto?.precio}}</td>
+        <td>{{repuesto.cantidadAdquirida}}</td>
+        <td class="left">{{repuesto.cantidadExistente}}</td>
+      </tr>
+      </tbody>
+  </table>
 </form>
