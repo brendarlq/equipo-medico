@@ -1,5 +1,6 @@
 package com.mantenimiento.equipomedico.app.service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -201,51 +202,40 @@ public class EquipoServiceImpl implements EquipoService {
     }
 
 
-    public MetricasDTO calculoMetricas(Long equipoId, Date fechaInicio, Date fechaFin) {
+    public MetricasDTO calculoMetricas(Long equipoId, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
 
         List<RegistroEstadosEquipo> registroEstadosEquipoList = registroEstadosEquipoRepository.getAllByEquipoIdAAndFechaInicioBetween(equipoId, fechaInicio, fechaFin);
         registroEstadosEquipoList.sort(Comparator.comparing(RegistroEstadosEquipo::getFechaInicio));
 
-        List<RegistroEstadosEquipo> registrosInoperativosList = registroEstadosEquipoList.stream().filter(f -> f.getEstado().equals("Inoperativo")).collect(
-                Collectors.toList());
+
+        List<RegistroEstadosEquipo> registrosInoperativosList = registroEstadosEquipoList.stream()
+                .filter(f -> f.getEstado().equals("Inoperativo"))
+                .collect(Collectors.toList());
 
         registrosInoperativosList.sort(Comparator.comparing(RegistroEstadosEquipo::getFechaInicio));
         Integer totalAverias = registrosInoperativosList.size();
 
-        int i = 0;
-        Long totalDays = Long.valueOf(0);
-        Long mediaAverias = Long.valueOf(0);
-        if (!registrosInoperativosList.isEmpty() && registrosInoperativosList.size() > 1) {
-            while (i < registrosInoperativosList.size() - 1) {
-                LocalDateTime dateBefore = registrosInoperativosList.get(i).getFechaInicio();
-                LocalDateTime dateAfter = registrosInoperativosList.get(i + 1).getFechaInicio();
-                Long noOfDaysBetween = ChronoUnit.DAYS.between(dateBefore, dateAfter);
-                i++;
-                totalDays = totalDays + noOfDaysBetween;
-            }
-            mediaAverias = totalDays / i;
+        if(registrosInoperativosList.get(registrosInoperativosList.size()-1).getFechaFin() == null) {
+            registroEstadosEquipoList.get(registroEstadosEquipoList.size() - 1).setFechaFin(LocalDateTime.now());
         }
 
-        //ponemos el ultimo elemento de la lista con fecha actual
-        registroEstadosEquipoList.get(registroEstadosEquipoList.size() - 1).setFechaFin(LocalDateTime.now());
-
-        Long totalDaysInactive = Long.valueOf(0);
+        long totalHoursInactive = 0L;
+        long mediaAverias = 0L;
         if (!registrosInoperativosList.isEmpty()) {
-            for (int j = 0; j < registroEstadosEquipoList.size() - 1; j++) {
-                if ("Inoperativo".equals(registroEstadosEquipoList.get(j).getEstado())) {
-                    LocalDateTime dateBefore = registroEstadosEquipoList.get(j).getFechaInicio();
-                    LocalDateTime dateAfter = registroEstadosEquipoList.get(j + 1).getFechaInicio();
-                    Long noOfDaysBetween = ChronoUnit.DAYS.between(dateBefore, dateAfter);
-                    totalDaysInactive = totalDaysInactive + noOfDaysBetween;
-                }
+            for (RegistroEstadosEquipo registroEstadosEquipo : registrosInoperativosList) {
+                LocalDateTime dateBefore = registroEstadosEquipo.getFechaInicio();
+                LocalDateTime dateAfter = registroEstadosEquipo.getFechaFin();
+                long noOfHoursBetween = ChronoUnit.HOURS.between(dateAfter, dateBefore);
+                totalHoursInactive = totalHoursInactive + noOfHoursBetween;
             }
+            mediaAverias = (totalHoursInactive/totalAverias);
         }
-
+        
         MetricasDTO metricasDTO = new MetricasDTO();
         metricasDTO.setTotalAverias(totalAverias);
         metricasDTO.setMediaAverias(mediaAverias);
-        metricasDTO.setTotalDaysInactive(totalDaysInactive);
-        metricasDTO.setTotalDaysInstalacion(ChronoUnit.DAYS.between
+        metricasDTO.setTotalHoursInactive(totalHoursInactive);
+        metricasDTO.setTotalHoursInstalacion(ChronoUnit.HOURS.between
                 (registroEstadosEquipoList.get(0).getFechaInicio(), (LocalDateTime.now())));
 
         return metricasDTO;

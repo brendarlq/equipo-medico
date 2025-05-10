@@ -2,6 +2,8 @@ package com.mantenimiento.equipomedico.app.controller;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import com.mantenimiento.equipomedico.app.entidad.EquipoDTO;
 import com.mantenimiento.equipomedico.app.entidad.MetricasDTO;
 import com.mantenimiento.equipomedico.app.service.EquipoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -212,7 +215,9 @@ public class EquipoController
 	 */
 	@RequestMapping(value = "metricas-by-equipo-and-fecha", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public MetricasDTO getMetricasByEquipoAndFechas(@RequestParam Long equipoId,
-		@RequestParam Date fechaInicio, @RequestParam Date fechaFin) {
+													@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+													@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin) {
+
 		return equipoService.calculoMetricas(equipoId, fechaInicio, fechaFin);
 	}
 

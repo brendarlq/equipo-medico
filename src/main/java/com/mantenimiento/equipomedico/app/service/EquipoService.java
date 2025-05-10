@@ -1,5 +1,7 @@
 package com.mantenimiento.equipomedico.app.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -87,5 +89,5 @@ public interface EquipoService
 	 */
 	Equipo cambioEstado(Long id, String estado);
 
-	MetricasDTO calculoMetricas(Long equipoId, Date fechaInicio, Date fechaFin);
+	MetricasDTO calculoMetricas(Long equipoId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
 }
