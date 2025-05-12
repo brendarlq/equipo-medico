@@ -30,6 +30,8 @@ export class InformeEquiposComponent implements OnInit {
   metricasDTO: MetricasDTO;
   fechaIniMetrica: any;
   fechaFinMetrica: any;
+  fechaIniMetricaParam: any;
+  fechaFinMetricaParam: any;
   habilitarBtnMetricaFilter = false;
 
   // mantenimiento
@@ -58,7 +60,9 @@ export class InformeEquiposComponent implements OnInit {
   infoServiciosMessage: string;
   infoRepuestos: boolean;
   infoRepuestosMessage: string;
+  infoMetricas: boolean;
   showData = true;
+  infoMetricasMessage: string;
 
   constructor(private equipoService: EquipoService,
               private mantenimientoService: ManteniminetoService,
@@ -163,7 +167,9 @@ export class InformeEquiposComponent implements OnInit {
       const partfechaFinMetrica = this.fechaFinMetrica.split('-');
       this.fechaIniMetrica = partfechaIniMetrica[0] + '/' + partfechaIniMetrica[1] + '/' + partfechaIniMetrica[2];
       this.fechaFinMetrica = partfechaFinMetrica[0] + '/' + partfechaFinMetrica[1] + '/' + partfechaFinMetrica[2];
-      if (new Date(+partfechaIniMetrica[0], +partfechaIniMetrica[1] - 1, +partfechaIniMetrica[2]) > new Date(+partfechaFinMetrica[0], +partfechaFinMetrica[1] - 1, +partfechaFinMetrica[2])) {
+      this.fechaIniMetricaParam = new Date(+partfechaIniMetrica[0], +partfechaIniMetrica[1] - 1, +partfechaIniMetrica[2]);
+      this.fechaFinMetricaParam = new Date(+partfechaFinMetrica[0], +partfechaFinMetrica[1] - 1, +partfechaFinMetrica[2]);
+      if (this.fechaIniMetricaParam > this.fechaFinMetricaParam) {
         this.errorMetricasMessage = "La fecha final no puede ser mayor a la fecha inicial.";
         this.errorMetricas = true;
       } else {
@@ -173,14 +179,19 @@ export class InformeEquiposComponent implements OnInit {
   }
 
   buscarMetricasByEquipoAndFechas(){
-    this.equipoService.getMetricasByEquipoAndFechas(this.equipoSeleccionado.idEquipo, this.fechaIniMetrica, this.fechaFinMetrica).subscribe(
+    this.equipoService.getMetricasByEquipoAndFechas(this.equipoSeleccionado.idEquipo, this.fechaIniMetricaParam, this.fechaFinMetricaParam).subscribe(
       result => {
         this.metricasDTO = result;
+        if (result.totalHoursInactive == 0) {
+          this.infoMetricasMessage = "El equipo no cuenta con tiempo de inactividad dentro del rango de fechas ingresado.";
+          this.infoMetricas = true;
+        }
         console.log(this.metricasDTO)
       },
       error => {
-        this.errorMessage = error.error;
-        console.log(this.errorMessage);
+        this.errorMetricasMessage = error.error;
+        console.log(this.errorMetricasMessage);
+        this.errorMetricas = true;
       }
     );
   }

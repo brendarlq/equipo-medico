@@ -154,19 +154,34 @@
   <!-- medición de desempeño-->
   <h3 class="form-informe-sub-title">Medición de desempeño</h3>
   <!-- errors -->
-  <div class="alert alert-danger" role="alert" *ngIf="errorRepuestos">
+  <div class="alert alert-danger" role="alert" *ngIf="errorMetricas">
     <div class="alert-items">
       <div class="alert-item static">
         <div class="alert-icon-wrapper">
           <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
         </div>
-        <span class="alert-text">{{errorRepuestosMessage}}</span>
+        <span class="alert-text">{{errorMetricasMessage}}</span>
       </div>
     </div>
-    <button type="button" class="close" aria-label="Close" (click)="errorRepuestos = false">
+    <button type="button" class="close" aria-label="Close" (click)="errorMetricas = false">
       <clr-icon aria-hidden="true" shape="close"></clr-icon>
     </button>
     <br/>
+  </div>
+
+  <!-- info -->
+  <div class="alert alert-info" role="alert" *ngIf="infoMetricas">
+    <div class="alert-items">
+      <div class="alert-item static">
+        <div class="alert-icon-wrapper">
+          <clr-icon class="alert-icon" shape="info-circle"></clr-icon>
+        </div>
+        <span class="alert-text">{{infoMetricasMessage}}</span>
+      </div>
+    </div>
+    <button type="button" class="close" aria-label="Close" (click)="infoMetricas = false">
+      <clr-icon aria-hidden="true" shape="close"></clr-icon>
+    </button>
   </div>
 
   <div class="clr-row">
@@ -200,7 +215,7 @@
         </tr>
         <tr>
           <th class="column-width">El tiempo de inactividad:</th>
-          <td>{{metricasDTO?.totalDaysInactive}}</td>
+          <td>{{metricasDTO?.totalHoursInactive}}</td>
         </tr>
         <tr>
           <th class="column-width">La medida de tiempo entre averias:</th>
