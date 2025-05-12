@@ -215,7 +215,7 @@ public class EquipoServiceImpl implements EquipoService {
         registrosInoperativosList.sort(Comparator.comparing(RegistroEstadosEquipo::getFechaInicio));
         Integer totalAverias = registrosInoperativosList.size();
 
-        if(registrosInoperativosList.get(registrosInoperativosList.size()-1).getFechaFin() == null) {
+        if(!registrosInoperativosList.isEmpty() && registrosInoperativosList.get(registrosInoperativosList.size()-1).getFechaFin() == null) {
             registroEstadosEquipoList.get(registroEstadosEquipoList.size() - 1).setFechaFin(LocalDateTime.now());
         }
 
@@ -235,8 +235,13 @@ public class EquipoServiceImpl implements EquipoService {
         metricasDTO.setTotalAverias(totalAverias);
         metricasDTO.setMediaAverias(mediaAverias);
         metricasDTO.setTotalHoursInactive(totalHoursInactive);
-        metricasDTO.setTotalHoursInstalacion(ChronoUnit.HOURS.between
+        if(!registrosInoperativosList.isEmpty()){
+            metricasDTO.setTotalHoursInstalacion(ChronoUnit.HOURS.between
                 (registroEstadosEquipoList.get(0).getFechaInicio(), (LocalDateTime.now())));
+        } else {
+            metricasDTO.setTotalHoursInstalacion(0L);
+        }
+
 
         return metricasDTO;
     }

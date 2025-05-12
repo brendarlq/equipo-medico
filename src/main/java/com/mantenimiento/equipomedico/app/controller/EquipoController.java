@@ -3,7 +3,10 @@ package com.mantenimiento.equipomedico.app.controller;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -215,10 +218,16 @@ public class EquipoController
 	 */
 	@RequestMapping(value = "metricas-by-equipo-and-fecha", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public MetricasDTO getMetricasByEquipoAndFechas(@RequestParam Long equipoId,
-													@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
-													@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin) {
-
-		return equipoService.calculoMetricas(equipoId, fechaInicio, fechaFin);
+		@RequestParam Date fechaInicio, @RequestParam Date fechaFin) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String fechaInicioString = sdf.format(fechaInicio);
+		String fechaFinString = sdf.format(fechaFin);
+		fechaInicioString = fechaFinString + " 00:00:00";
+		fechaFinString = fechaFinString + " 23:59:59";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime fechaInicioDateTime = LocalDateTime.parse(fechaInicioString, formatter);
+		LocalDateTime fechaFinDateTime = LocalDateTime.parse(fechaFinString, formatter);
+		return equipoService.calculoMetricas(equipoId, fechaInicioDateTime,fechaFinDateTime);
 	}
 
 	/**
