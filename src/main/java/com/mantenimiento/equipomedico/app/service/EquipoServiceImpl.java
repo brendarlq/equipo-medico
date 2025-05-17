@@ -233,8 +233,8 @@ public class EquipoServiceImpl implements EquipoService {
         
         MetricasDTO metricasDTO = new MetricasDTO();
         metricasDTO.setTotalAverias(totalAverias);
-        metricasDTO.setMediaAverias(mediaAverias);
-        metricasDTO.setTotalHoursInactive(totalHoursInactive);
+        metricasDTO.setMediaAverias(mediaAverias/60);
+        metricasDTO.setTotalHoursInactive(totalHoursInactive/60);
         if(!registrosInoperativosList.isEmpty()){
             metricasDTO.setTotalHoursInstalacion(ChronoUnit.MINUTES.between
                 (registroEstadosEquipoList.get(0).getFechaInicio(), (LocalDateTime.now())));
