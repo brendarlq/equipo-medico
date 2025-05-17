@@ -115,7 +115,7 @@ export class EquipoService {
   }
 
 
-  getMetricasByEquipoAndFechas(equipoId: number, fechaIni: Date, fechaFin: Date): Observable<MetricasDTO> {
+  getMetricasByEquipoAndFechas(equipoId: number, fechaIni: string, fechaFin: string): Observable<MetricasDTO> {
     const url = this.urlEquipos + 'metricas-by-equipo-and-fecha?equipoId=' + equipoId + '&fechaInicio=' + fechaIni + '&fechaFin=' + fechaFin;
     return this.apiRequest.get(url);
   }

@@ -353,6 +353,7 @@ export class EditMantenimientoComponent implements OnInit {
           this.ordenTrabajo.tipoServicio, this.equipoSeleccionado.estado, this.ordenTrabajo, this.fechaMantenimiento);
         this.saveMantenimiento(this.servicioRealizado);
       } else {
+        this.ordenTrabajo.equipo.estado = this.equipoSeleccionado.estado;
         this.updateOrdenTrabajo(this.ordenTrabajo);
       }
     }

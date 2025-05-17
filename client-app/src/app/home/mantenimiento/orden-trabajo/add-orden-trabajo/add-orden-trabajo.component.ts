@@ -197,7 +197,8 @@ export class AddOrdenTrabajoComponent implements OnInit {
     this.equipoService.getEquipoById(this.equipoSeleccionado.idEquipo).subscribe(
       equipo => {
         this.ordenTrabajo.equipo = equipo;
-        this.saveOrdenTrabajo(this.ordenTrabajo);
+        this.ordenTrabajo.equipo.estado = this.equipoSeleccionado.estadoEquipo;
+          this.saveOrdenTrabajo(this.ordenTrabajo);
       },
       error => {
         this.errorMessage = "Error al obtener el equipo seleccionado";

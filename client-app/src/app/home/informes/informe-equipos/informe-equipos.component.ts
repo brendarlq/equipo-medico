@@ -179,7 +179,7 @@ export class InformeEquiposComponent implements OnInit {
   }
 
   buscarMetricasByEquipoAndFechas(){
-    this.equipoService.getMetricasByEquipoAndFechas(this.equipoSeleccionado.idEquipo, this.fechaIniMetricaParam, this.fechaFinMetricaParam).subscribe(
+    this.equipoService.getMetricasByEquipoAndFechas(this.equipoSeleccionado.idEquipo, this.fechaIniMetrica, this.fechaFinMetrica).subscribe(
       result => {
         this.metricasDTO = result;
         if (result.totalHoursInactive == 0) {
