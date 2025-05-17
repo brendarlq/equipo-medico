@@ -132,6 +132,7 @@ export class InformeEquiposComponent implements OnInit {
     this.equipoService.getEquipoByParams(this.requestEquipo).subscribe(
       equipo => {
         if(equipo.idEquipo != null) {
+          this.limpiarCamposBuscadosPorFechas();
           this.equipoSeleccionado = equipo;
           this.camposEquipo(equipo);
           this.buscarMantenimientoByEquipo(equipo.idEquipo);
@@ -165,21 +166,22 @@ export class InformeEquiposComponent implements OnInit {
     if (this.fechaIniMetrica != '' && this.fechaFinMetrica != '') {
       const partfechaIniMetrica = this.fechaIniMetrica.split('-');
       const partfechaFinMetrica = this.fechaFinMetrica.split('-');
-      this.fechaIniMetrica = partfechaIniMetrica[0] + '/' + partfechaIniMetrica[1] + '/' + partfechaIniMetrica[2];
-      this.fechaFinMetrica = partfechaFinMetrica[0] + '/' + partfechaFinMetrica[1] + '/' + partfechaFinMetrica[2];
+      const fechaMetricaIni = partfechaIniMetrica[0] + '/' + partfechaIniMetrica[1] + '/' + partfechaIniMetrica[2];
+      const fechaMetricaFin = partfechaFinMetrica[0] + '/' + partfechaFinMetrica[1] + '/' + partfechaFinMetrica[2];
       this.fechaIniMetricaParam = new Date(+partfechaIniMetrica[0], +partfechaIniMetrica[1] - 1, +partfechaIniMetrica[2]);
       this.fechaFinMetricaParam = new Date(+partfechaFinMetrica[0], +partfechaFinMetrica[1] - 1, +partfechaFinMetrica[2]);
+
       if (this.fechaIniMetricaParam > this.fechaFinMetricaParam) {
         this.errorMetricasMessage = "La fecha final no puede ser mayor a la fecha inicial.";
         this.errorMetricas = true;
       } else {
-        this.buscarMetricasByEquipoAndFechas();
+        this.buscarMetricasByEquipoAndFechas(fechaMetricaIni,fechaMetricaFin);
       }
     }
   }
 
-  buscarMetricasByEquipoAndFechas(){
-    this.equipoService.getMetricasByEquipoAndFechas(this.equipoSeleccionado.idEquipo, this.fechaIniMetrica, this.fechaFinMetrica).subscribe(
+  buscarMetricasByEquipoAndFechas(fehcaIni: any, fechaFin: any){
+    this.equipoService.getMetricasByEquipoAndFechas(this.equipoSeleccionado.idEquipo, fehcaIni, fechaFin).subscribe(
       result => {
         this.metricasDTO = result;
         if (result.totalHoursInactive == 0) {
@@ -361,7 +363,10 @@ export class InformeEquiposComponent implements OnInit {
     this.fechaVenGarantia = "";
     this.fechaInstalacion = "";
     this.fechaCompra = "";
+    this.limpiarCamposBuscadosPorFechas();
+  }
 
+  limpiarCamposBuscadosPorFechas(){
     // desempeño
     this.metricasDTO = null;
     this.fechaIniMetrica = "";
@@ -380,5 +385,4 @@ export class InformeEquiposComponent implements OnInit {
     this.fechaFinRepuesto = "";
     this.habilitarBtnRepFilter = false;
   }
-
 }
